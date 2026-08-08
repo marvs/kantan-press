@@ -66,3 +66,9 @@ group :development do
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem "web-console"
 end
+
+group :development, :test do
+  # Loads .env so local runs get the KANTAN_* settings without exporting them.
+  # Production takes its configuration from Kamal secrets instead.
+  gem "dotenv-rails"
+end
