@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title><%= content_for(:title) || "Admin" %> &middot; Kantan Press</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <link rel="icon" href="/icon.png" type="image/png">
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body class="admin">
+    <header class="admin-bar">
+      <a class="admin-brand" href="<%= admin_root_path %>">Kantan Press</a>
+      <nav class="admin-nav">
+        <%= link_to "Posts", admin_posts_path, class: admin_nav_class("posts") %>
+        <%= link_to "Media", admin_media_items_path, class: admin_nav_class("media_items") %>
+        <%= link_to "Comments", admin_comments_path, class: admin_nav_class("comments") %>
+        <%= link_to "Import", admin_imports_path, class: admin_nav_class("imports") %>
+      </nav>
+      <div class="admin-account">
+        <a href="<%= root_path %>" target="_blank" rel="noopener">View site</a>
+        <%= button_to "Sign out", session_path, method: :delete, class: "linkish" %>
+      </div>
+    </header>
+
+    <% if flash[:notice].present? || flash[:alert].present? %>
+      <div class="flash <%= flash[:alert].present? ? 'flash-alert' : 'flash-notice' %>">
+        <%= flash[:alert].presence || flash[:notice] %>
+      </div>
+    <% end %>
+
+    <main class="admin-main">
+      <%= yield %>
+    </main>
+  </body>
+</html>

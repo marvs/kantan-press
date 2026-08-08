@@ -1,0 +1,17 @@
+<% content_for :title, "Kantan Press" %>
+
+<% if @posts.any? %>
+  <div class="post-list">
+    <%= render partial: "posts/summary", collection: @posts, as: :post %>
+  </div>
+
+  <% if @total_pages > 1 %>
+    <nav class="pagination">
+      <span><%= link_to "← Newer", root_path(page: @page - 1) if @page > 1 %></span>
+      <span class="muted">Page <%= @page %> of <%= @total_pages %></span>
+      <span><%= link_to "Older →", root_path(page: @page + 1) if @page < @total_pages %></span>
+    </nav>
+  <% end %>
+<% else %>
+  <p class="empty">Nothing published yet.</p>
+<% end %>

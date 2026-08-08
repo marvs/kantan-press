@@ -1,0 +1,8 @@
+<% content_for :title, @post.title %>
+
+<div class="admin-head">
+  <h1>Edit post</h1>
+  <%= link_to "Back to posts", admin_posts_path, class: "btn btn-secondary" %>
+</div>
+
+<%= render "form", post: @post %>

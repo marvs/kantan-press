@@ -1,0 +1,59 @@
+<% content_for :title, "Import #{@import.filename}" %>
+
+<div class="admin-head">
+  <h1>Import <span class="mono" style="font-size:0.8em"><%= @import.filename %></span></h1>
+  <%= link_to "All imports", admin_imports_path, class: "btn btn-secondary" %>
+</div>
+
+<div class="card">
+  <div class="card-head">
+    <%= status_pill(@import.status) %>
+    <% if @import.duration %>
+      <span class="muted" style="font-weight:400"> finished in <%= number_with_precision(@import.duration, precision: 1) %>s</span>
+    <% end %>
+  </div>
+  <div class="card-body">
+    <% if @import.stats.present? %>
+      <table class="index">
+        <thead><tr><th>Record</th><th>Created</th><th>Updated</th><th>Existing</th><th>Failed</th></tr></thead>
+        <tbody>
+          <% @import.stats.sort.each do |kind, tallies| %>
+            <tr>
+              <td><%= kind.humanize %></td>
+              <td class="numeric"><%= tallies["created"].to_i %></td>
+              <td class="numeric"><%= tallies["updated"].to_i %></td>
+              <td class="numeric"><%= tallies["existing"].to_i %></td>
+              <td class="numeric"><%= tallies["failed"].to_i %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% elsif @import.running? %>
+      <p class="empty">Running — reload for progress.</p>
+    <% else %>
+      <p class="empty">Queued. A background worker picks this up; run <span class="mono">bin/jobs</span> if none is running.</p>
+    <% end %>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-head">Image downloads</div>
+  <div class="card-body">
+    <div class="stat-grid">
+      <div class="stat"><div class="n"><%= @media_counts.fetch("stored", 0) %></div><div class="k">Stored</div></div>
+      <div class="stat"><div class="n"><%= @media_counts.fetch("pending", 0) %></div><div class="k">Pending</div></div>
+      <div class="stat"><div class="n"><%= @media_counts.fetch("failed", 0) %></div><div class="k">Failed</div></div>
+    </div>
+    <p style="margin-bottom:0;margin-top:1rem;font-size:0.86rem">
+      Images download in the background, one job each.
+      <%= link_to "Review media →", admin_media_items_path %>
+    </p>
+  </div>
+</div>
+
+<% if @import.error_log.present? %>
+  <div class="card">
+    <div class="card-head">Errors</div>
+    <div class="card-body"><div class="log"><%= @import.error_log %></div></div>
+  </div>
+<% end %>

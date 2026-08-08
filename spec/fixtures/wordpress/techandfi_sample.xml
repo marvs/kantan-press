@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0"
+  xmlns:excerpt="http://wordpress.org/export/1.2/excerpt/"
+  xmlns:content="http://purl.org/rss/1.0/modules/content/"
+  xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+  xmlns:dc="http://purl.org/dc/elements/1.1/"
+  xmlns:wp="http://wordpress.org/export/1.2/"
+>
+<channel>
+  <title>Tech and FI</title>
+  <link>https://techandfi.com</link>
+  <description>Technology and Financial Independence</description>
+  <wp:wxr_version>1.2</wp:wxr_version>
+  <wp:base_site_url>https://techandfi.com</wp:base_site_url>
+  <wp:base_blog_url>https://techandfi.com</wp:base_blog_url>
+
+  <wp:author>
+    <wp:author_id>1</wp:author_id>
+    <wp:author_login><![CDATA[marvs]]></wp:author_login>
+    <wp:author_display_name><![CDATA[Marvs]]></wp:author_display_name>
+  </wp:author>
+
+  <wp:category>
+    <wp:term_id>3</wp:term_id>
+    <wp:category_nicename><![CDATA[ai]]></wp:category_nicename>
+    <wp:category_parent><![CDATA[]]></wp:category_parent>
+    <wp:cat_name><![CDATA[AI]]></wp:cat_name>
+  </wp:category>
+  <wp:category>
+    <wp:term_id>7</wp:term_id>
+    <wp:category_nicename><![CDATA[web-development]]></wp:category_nicename>
+    <wp:category_parent><![CDATA[]]></wp:category_parent>
+    <wp:cat_name><![CDATA[Web Development]]></wp:cat_name>
+  </wp:category>
+  <wp:category>
+    <wp:term_id>9</wp:term_id>
+    <wp:category_nicename><![CDATA[local-llms]]></wp:category_nicename>
+    <wp:category_parent><![CDATA[ai]]></wp:category_parent>
+    <wp:cat_name><![CDATA[Local LLMs]]></wp:cat_name>
+  </wp:category>
+
+  <wp:tag>
+    <wp:term_id>21</wp:term_id>
+    <wp:tag_slug><![CDATA[llm]]></wp:tag_slug>
+    <wp:tag_name><![CDATA[LLM]]></wp:tag_name>
+  </wp:tag>
+
+  <!-- Attachment: the featured image referenced by _thumbnail_id below -->
+  <item>
+    <title><![CDATA[qwen3_web_search_result]]></title>
+    <link>https://techandfi.com/local-llm-tool-calls/qwen3_web_search_result/</link>
+    <pubDate>Tue, 27 May 2026 22:51:27 +0000</pubDate>
+    <dc:creator><![CDATA[marvs]]></dc:creator>
+    <guid isPermaLink="false">https://techandfi.com/wp-content/uploads/2026/05/qwen3_web_search_result.png</guid>
+    <wp:post_id>901</wp:post_id>
+    <wp:post_date><![CDATA[2026-05-27 22:51:27]]></wp:post_date>
+    <wp:post_date_gmt><![CDATA[2026-05-27 14:51:27]]></wp:post_date_gmt>
+    <wp:post_name><![CDATA[qwen3_web_search_result]]></wp:post_name>
+    <wp:status><![CDATA[inherit]]></wp:status>
+    <wp:post_type><![CDATA[attachment]]></wp:post_type>
+    <wp:attachment_url><![CDATA[https://techandfi.com/wp-content/uploads/2026/05/qwen3_web_search_result.png]]></wp:attachment_url>
+    <wp:postmeta>
+      <wp:meta_key><![CDATA[_wp_attached_file]]></wp:meta_key>
+      <wp:meta_value><![CDATA[2026/05/qwen3_web_search_result.png]]></wp:meta_value>
+    </wp:postmeta>
+    <wp:postmeta>
+      <wp:meta_key><![CDATA[_wp_attachment_image_alt]]></wp:meta_key>
+      <wp:meta_value><![CDATA[Qwen3 web search result]]></wp:meta_value>
+    </wp:postmeta>
+    <wp:postmeta>
+      <wp:meta_key><![CDATA[_wp_attachment_metadata]]></wp:meta_key>
+      <wp:meta_value><![CDATA[a:5:{s:5:"width";i:1920;s:6:"height";i:1080;s:4:"file";s:38:"2026/05/qwen3_web_search_result.png";s:5:"sizes";a:1:{s:9:"thumbnail";a:4:{s:4:"file";s:38:"qwen3_web_search_result-150x150.png";s:5:"width";i:150;s:6:"height";i:150;s:9:"mime-type";s:9:"image/png";}}s:10:"image_meta";a:0:{}}]]></wp:meta_value>
+    </wp:postmeta>
+  </item>
+
+  <!-- Gutenberg-era post: block markup, srcset variants, a featured image -->
+  <item>
+    <title><![CDATA[Local LLM Tool Calls]]></title>
+    <link>https://techandfi.com/local-llm-tool-calls/</link>
+    <pubDate>Tue, 27 May 2026 22:51:27 +0000</pubDate>
+    <dc:creator><![CDATA[marvs]]></dc:creator>
+    <guid isPermaLink="false">https://techandfi.com/?p=900</guid>
+    <content:encoded><![CDATA[<!-- wp:paragraph -->
+<p>We have <a href="https://techandfi.com/running-llms-in-intel-laptops/">installed a local LLM</a> and tried tool calls.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:image {"id":901,"sizeSlug":"large"} -->
+<figure class="wp-block-image size-large"><img src="https://techandfi.com/wp-content/uploads/2026/05/qwen3_web_search_result.png" alt="Qwen3 web search result" class="wp-image-901" srcset="https://techandfi.com/wp-content/uploads/2026/05/qwen3_web_search_result.png 1920w, https://techandfi.com/wp-content/uploads/2026/05/qwen3_web_search_result-300x169.png 300w, https://techandfi.com/wp-content/uploads/2026/05/qwen3_web_search_result-1024x576.png 1024w" sizes="(max-width: 1920px) 100vw, 1920px" /></figure>
+<!-- /wp:image -->
+
+<!-- wp:code -->
+<pre class="wp-block-code"><code>curl http://localhost:11434/api/chat</code></pre>
+<!-- /wp:code -->]]></content:encoded>
+    <excerpt:encoded><![CDATA[]]></excerpt:encoded>
+    <wp:post_id>900</wp:post_id>
+    <wp:post_date><![CDATA[2026-05-27 22:51:27]]></wp:post_date>
+    <wp:post_date_gmt><![CDATA[2026-05-27 14:51:27]]></wp:post_date_gmt>
+    <wp:post_name><![CDATA[local-llm-tool-calls]]></wp:post_name>
+    <wp:status><![CDATA[publish]]></wp:status>
+    <wp:post_type><![CDATA[post]]></wp:post_type>
+    <category domain="category" nicename="ai"><![CDATA[AI]]></category>
+    <category domain="post_tag" nicename="llm"><![CDATA[LLM]]></category>
+    <wp:postmeta>
+      <wp:meta_key><![CDATA[_thumbnail_id]]></wp:meta_key>
+      <wp:meta_value><![CDATA[901]]></wp:meta_value>
+    </wp:postmeta>
+    <wp:comment>
+      <wp:comment_id>11</wp:comment_id>
+      <wp:comment_author><![CDATA[Reader]]></wp:comment_author>
+      <wp:comment_author_email><![CDATA[reader@example.com]]></wp:comment_author_email>
+      <wp:comment_author_url><![CDATA[https://example.com]]></wp:comment_author_url>
+      <wp:comment_date><![CDATA[2026-05-28 08:00:00]]></wp:comment_date>
+      <wp:comment_date_gmt><![CDATA[2026-05-28 00:00:00]]></wp:comment_date_gmt>
+      <wp:comment_content><![CDATA[Great write-up.]]></wp:comment_content>
+      <wp:comment_approved><![CDATA[1]]></wp:comment_approved>
+      <wp:comment_parent>0</wp:comment_parent>
+    </wp:comment>
+    <wp:comment>
+      <wp:comment_id>12</wp:comment_id>
+      <wp:comment_author><![CDATA[Marvs]]></wp:comment_author>
+      <wp:comment_date><![CDATA[2026-05-28 09:00:00]]></wp:comment_date>
+      <wp:comment_date_gmt><![CDATA[2026-05-28 01:00:00]]></wp:comment_date_gmt>
+      <wp:comment_content><![CDATA[Thanks!]]></wp:comment_content>
+      <wp:comment_approved><![CDATA[1]]></wp:comment_approved>
+      <wp:comment_parent>11</wp:comment_parent>
+    </wp:comment>
+  </item>
+
+  <!-- Classic-editor post: plain HTML, date-based permalink, spam comment -->
+  <item>
+    <title><![CDATA[2016 Year in Review]]></title>
+    <link>https://techandfi.com/2016/12/2016-year-in-review/</link>
+    <pubDate>Sat, 31 Dec 2016 10:00:00 +0000</pubDate>
+    <dc:creator><![CDATA[marvs]]></dc:creator>
+    <guid isPermaLink="false">https://techandfi.com/?p=42</guid>
+    <content:encoded><![CDATA[<p>A look back at 2016.</p>
+<p><img src="https://techandfi.com/wp-content/uploads/2016/12/chart.jpg" alt="Chart" /></p>]]></content:encoded>
+    <excerpt:encoded><![CDATA[A look back at 2016.]]></excerpt:encoded>
+    <wp:post_id>42</wp:post_id>
+    <wp:post_date><![CDATA[2016-12-31 10:00:00]]></wp:post_date>
+    <wp:post_date_gmt><![CDATA[2016-12-31 02:00:00]]></wp:post_date_gmt>
+    <wp:post_name><![CDATA[2016-year-in-review]]></wp:post_name>
+    <wp:status><![CDATA[publish]]></wp:status>
+    <wp:post_type><![CDATA[post]]></wp:post_type>
+    <category domain="category" nicename="personal"><![CDATA[Personal]]></category>
+    <wp:comment>
+      <wp:comment_id>13</wp:comment_id>
+      <wp:comment_author><![CDATA[Spambot]]></wp:comment_author>
+      <wp:comment_date_gmt><![CDATA[2017-01-02 00:00:00]]></wp:comment_date_gmt>
+      <wp:comment_content><![CDATA[buy pills]]></wp:comment_content>
+      <wp:comment_approved><![CDATA[0]]></wp:comment_approved>
+      <wp:comment_parent>0</wp:comment_parent>
+    </wp:comment>
+  </item>
+
+  <!-- A page, plus a draft and a revision that must not become posts -->
+  <item>
+    <title><![CDATA[About]]></title>
+    <link>https://techandfi.com/about/</link>
+    <guid isPermaLink="false">https://techandfi.com/?page_id=2</guid>
+    <content:encoded><![CDATA[<p>About this blog.</p>]]></content:encoded>
+    <excerpt:encoded><![CDATA[]]></excerpt:encoded>
+    <wp:post_id>2</wp:post_id>
+    <wp:post_date_gmt><![CDATA[2015-01-01 00:00:00]]></wp:post_date_gmt>
+    <wp:post_name><![CDATA[about]]></wp:post_name>
+    <wp:status><![CDATA[publish]]></wp:status>
+    <wp:post_type><![CDATA[page]]></wp:post_type>
+  </item>
+  <item>
+    <title><![CDATA[Half Finished]]></title>
+    <link>https://techandfi.com/?p=950</link>
+    <guid isPermaLink="false">https://techandfi.com/?p=950</guid>
+    <content:encoded><![CDATA[<p>Not done yet.</p>]]></content:encoded>
+    <excerpt:encoded><![CDATA[]]></excerpt:encoded>
+    <wp:post_id>950</wp:post_id>
+    <wp:post_date_gmt><![CDATA[0000-00-00 00:00:00]]></wp:post_date_gmt>
+    <wp:post_name><![CDATA[half-finished]]></wp:post_name>
+    <wp:status><![CDATA[draft]]></wp:status>
+    <wp:post_type><![CDATA[post]]></wp:post_type>
+  </item>
+  <item>
+    <title><![CDATA[Local LLM Tool Calls]]></title>
+    <link>https://techandfi.com/900-revision-v1/</link>
+    <guid isPermaLink="false">https://techandfi.com/900-revision-v1/</guid>
+    <content:encoded><![CDATA[old draft body]]></content:encoded>
+    <wp:post_id>899</wp:post_id>
+    <wp:post_date_gmt><![CDATA[2026-05-27 14:00:00]]></wp:post_date_gmt>
+    <wp:post_name><![CDATA[900-revision-v1]]></wp:post_name>
+    <wp:status><![CDATA[inherit]]></wp:status>
+    <wp:post_type><![CDATA[revision]]></wp:post_type>
+  </item>
+</channel>
+</rss>

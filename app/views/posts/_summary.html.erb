@@ -1,0 +1,25 @@
+<article class="post-summary">
+  <% if post.featured_media_item&.stored? %>
+    <div class="post-thumb">
+      <%= link_to post_path(post.slug) do %>
+        <%= image_tag post.featured_media_item.url, loading: "lazy",
+              alt: post.featured_media_item.alt_text.to_s %>
+      <% end %>
+    </div>
+  <% end %>
+
+  <h2><%= link_to post.title, post_path(post.slug) %></h2>
+
+  <div class="post-meta">
+    <%= post_date(post) %>
+    <% if post.categories.any? %>
+      &middot;
+      <% post.categories.each_with_index do |category, index| %><%= "," if index.positive? %>
+        <%= link_to category.name, category_path(category.slug) %>
+      <% end %>
+    <% end %>
+  </div>
+
+  <p><%= post_excerpt(post) %></p>
+  <p><%= link_to "Continue reading →", post_path(post.slug) %></p>
+</article>

@@ -1,0 +1,11 @@
+<% content_for :title, "#{Date::MONTHNAMES[@month]} #{@year}" %>
+
+<h1 class="page-heading"><%= Date::MONTHNAMES[@month] %> <%= @year %></h1>
+
+<% if @posts.any? %>
+  <div class="post-list">
+    <%= render partial: "posts/summary", collection: @posts, as: :post %>
+  </div>
+<% else %>
+  <p class="empty">Nothing published that month.</p>
+<% end %>

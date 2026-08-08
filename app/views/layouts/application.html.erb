@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title><%= content_for(:title) || "Kantan Press" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= yield :head %>
+
+    <%= auto_discovery_link_tag :atom, feed_url, title: "Kantan Press feed" %>
+
+    <link rel="icon" href="/icon.png" type="image/png">
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body class="site">
+    <header class="site-header">
+      <a class="site-title" href="<%= root_path %>">Kantan Press</a>
+      <nav class="site-nav">
+        <% Category.alphabetical.limit(8).each do |category| %>
+          <%= link_to category.name, category_path(category.slug) %>
+        <% end %>
+      </nav>
+    </header>
+
+    <main class="site-main">
+      <%= yield %>
+    </main>
+
+    <footer class="site-footer">
+      <p><%= link_to "Feed", feed_path %> &middot; Powered by Kantan Press</p>
+    </footer>
+  </body>
+</html>

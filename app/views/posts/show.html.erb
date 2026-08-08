@@ -1,0 +1,64 @@
+<% content_for :title, @post.title %>
+
+<% content_for :head do %>
+  <meta name="description" content="<%= post_excerpt(@post, length: 160) %>">
+  <meta property="og:title" content="<%= @post.title %>">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="<%= post_url(@post.slug) %>">
+  <% if @post.featured_media_item&.stored? %>
+    <meta property="og:image" content="<%= @post.featured_media_item.url %>">
+  <% end %>
+  <link rel="canonical" href="<%= post_url(@post.slug) %>">
+<% end %>
+
+<article class="post-article">
+  <h1><%= @post.title %></h1>
+
+  <div class="post-meta">
+    <%= post_date(@post) %>
+    <% if @post.categories.any? %>
+      &middot;
+      <% @post.categories.each_with_index do |category, index| %><%= "," if index.positive? %>
+        <%= link_to category.name, category_path(category.slug) %>
+      <% end %>
+    <% end %>
+  </div>
+
+  <div class="post-body">
+    <%= render_post_body(@post) %>
+  </div>
+
+  <% if @post.tags.any? %>
+    <footer class="post-footer">
+      Tagged
+      <% @post.tags.each_with_index do |tag, index| %><%= "," if index.positive? %>
+        <%= link_to tag.name, tag_path(tag.slug) %>
+      <% end %>
+    </footer>
+  <% end %>
+</article>
+
+<% comments = @post.approved_comments %>
+<% if comments.any? %>
+  <section class="comments">
+    <h2><%= pluralize(comments.size, "comment") %></h2>
+    <% comments.each do |comment| %>
+      <div class="comment <%= "reply" if comment.parent_id %>">
+        <div class="comment-meta">
+          <strong>
+            <% if comment.author_url.present? %>
+              <%= link_to comment.author_name.presence || "Anonymous", comment.author_url,
+                    rel: "nofollow noopener", target: "_blank" %>
+            <% else %>
+              <%= comment.author_name.presence || "Anonymous" %>
+            <% end %>
+          </strong>
+          <% if comment.published_at %>
+            &middot; <%= l(comment.published_at.to_date, format: :long) %>
+          <% end %>
+        </div>
+        <div><%= simple_format(comment.content) %></div>
+      </div>
+    <% end %>
+  </section>
+<% end %>

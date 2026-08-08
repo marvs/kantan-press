@@ -1,0 +1,43 @@
+<% content_for :title, "Comments" %>
+
+<div class="admin-head">
+  <h1>Comments</h1>
+</div>
+
+<div class="filters">
+  <%= link_to "All (#{@counts.values.sum})", admin_comments_path,
+        class: params[:approved].blank? ? "active" : nil %>
+  <%= link_to "Approved (#{@counts.fetch(true, 0)})", admin_comments_path(approved: true),
+        class: params[:approved] == "true" ? "active" : nil %>
+  <%= link_to "Held (#{@counts.fetch(false, 0)})", admin_comments_path(approved: false),
+        class: params[:approved] == "false" ? "active" : nil %>
+</div>
+
+<% if @comments.any? %>
+  <table class="index">
+    <thead><tr><th>Author</th><th>Comment</th><th>On</th><th>Status</th><th></th></tr></thead>
+    <tbody>
+      <% @comments.each do |comment| %>
+        <tr>
+          <td>
+            <%= comment.author_name.presence || "Anonymous" %>
+            <div class="muted"><%= comment.author_email %></div>
+          </td>
+          <td><%= truncate(comment.content.to_s, length: 140) %></td>
+          <td class="muted"><%= link_to comment.post.title, edit_admin_post_path(comment.post) %></td>
+          <td><%= status_pill(comment.approved? ? "published" : "pending") %></td>
+          <td>
+            <%= button_to comment.approved? ? "Hold" : "Approve",
+                  admin_comment_path(comment, approved: !comment.approved?), method: :patch,
+                  class: "btn btn-secondary btn-small" %>
+            <%= button_to "Delete", admin_comment_path(comment), method: :delete,
+                  class: "btn btn-danger btn-small",
+                  form: { data: { turbo_confirm: "Delete this comment?" } } %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <div class="card"><div class="card-body empty">No comments.</div></div>
+<% end %>

@@ -1,0 +1,103 @@
+<%= form_with model: [ :admin, post ] do |form| %>
+  <% if post.errors.any? %>
+    <div class="errors">
+      <strong><%= pluralize(post.errors.count, "problem") %> stopped this from saving:</strong>
+      <ul>
+        <% post.errors.full_messages.each do |message| %><li><%= message %></li><% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="row">
+    <div class="main">
+      <div class="field">
+        <%= form.label :title %>
+        <%= form.text_field :title, placeholder: "Post title" %>
+      </div>
+
+      <div class="field">
+        <%= form.label :content, "Content" %>
+        <%= form.text_area :content, class: "content-editor", spellcheck: false %>
+        <p class="hint">
+          WordPress block markup. Block delimiters are HTML comments, so this is
+          stored and served verbatim — imported posts keep byte-for-byte fidelity.
+        </p>
+      </div>
+
+      <div class="field">
+        <%= form.label :excerpt %>
+        <%= form.text_area :excerpt, rows: 3 %>
+        <p class="hint">Shown on the index and in the feed. Left blank, the body is trimmed instead.</p>
+      </div>
+    </div>
+
+    <div class="side">
+      <div class="card">
+        <div class="card-head">Publishing</div>
+        <div class="card-body">
+          <div class="field">
+            <%= form.label :status %>
+            <%= form.select :status, Post.statuses.keys.map { |s| [ s.humanize, s ] } %>
+          </div>
+          <div class="field">
+            <%= form.label :post_type, "Type" %>
+            <%= form.select :post_type, Post.post_types.keys.map { |t| [ t.humanize, t ] } %>
+          </div>
+          <div class="field">
+            <%= form.label :published_at, "Publish date" %>
+            <%= form.datetime_field :published_at %>
+          </div>
+          <div class="field">
+            <%= form.label :slug %>
+            <%= form.text_field :slug, placeholder: "generated-from-title" %>
+            <p class="hint">Changing this breaks existing links unless you add a redirect.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">Taxonomy</div>
+        <div class="card-body">
+          <div class="field">
+            <%= form.label :category_ids, "Categories" %>
+            <%= form.collection_select :category_ids, Category.alphabetical, :id, :name,
+                  {}, multiple: true %>
+          </div>
+          <div class="field">
+            <%= form.label :tag_ids, "Tags" %>
+            <%= form.collection_select :tag_ids, Tag.alphabetical, :id, :name, {}, multiple: true %>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">Featured image</div>
+        <div class="card-body">
+          <div class="field">
+            <%= form.collection_select :featured_media_item_id,
+                  MediaItem.stored.recent.limit(200), :id, :filename,
+                  { include_blank: "None" } %>
+          </div>
+          <% if post.featured_media_item %>
+            <%= image_tag post.featured_media_item.url, class: "thumb",
+                  style: "width:100%;height:auto", loading: "lazy" %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="admin-head" style="margin-top:1.5rem">
+    <div>
+      <%= form.submit post.persisted? ? "Save post" : "Create post", class: "btn" %>
+      <% if post.persisted? && post.published? %>
+        <%= link_to "View", post_path(post.slug), class: "btn btn-secondary", target: "_blank", rel: "noopener" %>
+      <% end %>
+    </div>
+    <% if post.persisted? %>
+      <%= button_to "Delete", admin_post_path(post), method: :delete,
+            class: "btn btn-danger",
+            form: { data: { turbo_confirm: "Delete “#{post.title}” permanently?" } } %>
+    <% end %>
+  </div>
+<% end %>

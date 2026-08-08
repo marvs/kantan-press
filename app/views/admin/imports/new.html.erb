@@ -1,0 +1,64 @@
+<% content_for :title, "Import from WordPress" %>
+
+<div class="admin-head">
+  <h1>Import from WordPress</h1>
+  <%= link_to "Import history", admin_imports_path, class: "btn btn-secondary" %>
+</div>
+
+<div class="row">
+  <div class="main">
+    <div class="card">
+      <div class="card-head">WXR export file</div>
+      <div class="card-body">
+        <%= form_with url: admin_imports_path, method: :post do |form| %>
+          <div class="field">
+            <%= form.label :file, "Export file (.xml)" %>
+            <%= form.file_field :file, accept: ".xml,text/xml,application/xml" %>
+            <p class="hint">
+              In WordPress: <strong>Tools → Export → All content</strong>. The download is
+              a WXR file — RSS with WordPress's own namespace bolted on.
+            </p>
+          </div>
+          <%= form.submit "Start import", class: "btn" %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <div class="side">
+    <div class="card">
+      <div class="card-head">What happens</div>
+      <div class="card-body" style="font-size:0.86rem;line-height:1.6">
+        <ol style="padding-left:1.1rem;margin:0">
+          <li>Categories and tags are created, nesting preserved.</li>
+          <li>Attachments are registered, keeping their original
+              <span class="mono">wp-content/uploads/…</span> key.</li>
+          <li>Posts and pages import with block markup untouched; every image URL in
+              the body is rewritten onto your media host.</li>
+          <li>Each image is downloaded and pushed to storage by a background job, so
+              this page returns immediately.</li>
+        </ol>
+        <p style="margin-bottom:0">
+          Re-running the same export updates records in place rather than duplicating them.
+        </p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">Current configuration</div>
+      <div class="card-body" style="font-size:0.85rem">
+        <p style="margin-top:0">
+          Storage backend: <strong><%= KantanPress::Config.storage_backend %></strong><br>
+          Media base URL: <span class="mono"><%= KantanPress::Config.media_base_url.presence || "(not set)" %></span><br>
+          Legacy site URL: <span class="mono"><%= KantanPress::Config.legacy_site_url.presence || "(read from export)" %></span>
+        </p>
+        <% if KantanPress::Config.media_base_url.blank? %>
+          <p style="color:var(--danger);margin-bottom:0">
+            Set <span class="mono">KANTAN_MEDIA_BASE_URL</span> before importing, or image
+            URLs will be rewritten to nothing.
+          </p>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

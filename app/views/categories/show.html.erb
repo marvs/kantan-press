@@ -1,0 +1,14 @@
+<% content_for :title, @category.name %>
+
+<h1 class="page-heading"><%= @category.name %></h1>
+<% if @category.description.present? %>
+  <p class="muted"><%= @category.description %></p>
+<% end %>
+
+<% if @posts.any? %>
+  <div class="post-list">
+    <%= render partial: "posts/summary", collection: @posts, as: :post %>
+  </div>
+<% else %>
+  <p class="empty">Nothing in this category yet.</p>
+<% end %>

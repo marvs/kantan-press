@@ -1,0 +1,27 @@
+<% content_for :title, "Imports" %>
+
+<div class="admin-head">
+  <h1>Imports</h1>
+  <%= link_to "New import", new_admin_import_path, class: "btn" %>
+</div>
+
+<% if @imports.any? %>
+  <table class="index">
+    <thead><tr><th>File</th><th>Status</th><th>Summary</th><th>Started</th><th></th></tr></thead>
+    <tbody>
+      <% @imports.each do |import| %>
+        <tr>
+          <td class="mono"><%= import.filename %></td>
+          <td><%= status_pill(import.status) %></td>
+          <td class="muted"><%= import_summary(import) %></td>
+          <td class="muted"><%= import.started_at ? l(import.started_at, format: :short) : "—" %></td>
+          <td><%= link_to "Details", admin_import_path(import) %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <div class="card"><div class="card-body empty">
+    Nothing imported yet. <%= link_to "Upload a WordPress export", new_admin_import_path %>.
+  </div></div>
+<% end %>
