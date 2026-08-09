@@ -104,23 +104,38 @@ RSpec.describe Wordpress::Importer do
       expect(MediaItem.find_by(wp_attachment_id: 901)).to have_attributes(width: 1920, height: 1080)
     end
 
-    it "registers srcset variants that were never listed as attachments" do
-      expect(MediaItem.pluck(:key)).to include(
-        "wp-content/uploads/2026/05/qwen3_web_search_result-300x169.png",
-        "wp-content/uploads/2026/05/qwen3_web_search_result-1024x576.png"
-      )
+    it "registers the sized variants classic-editor posts link directly" do
+      # WordPress only exports the original as an attachment; the "-300x200"
+      # file it generated is referenced from post content and nowhere else.
+      expect(MediaItem.find_by(key: "wp-content/uploads/2016/12/chart-300x200.jpg")).to be_present
     end
 
-    it "registers images found only in classic-editor HTML" do
+    it "registers uploads that only appear as plain links" do
       expect(MediaItem.find_by(key: "wp-content/uploads/2016/12/chart.jpg")).to be_present
     end
 
-    it "rewrites every src and srcset entry onto the media host" do
+    it "rewrites uploads URLs in block markup onto the media host" do
       content = Post.find_by(slug: "local-llm-tool-calls").content
 
       expect(content).not_to include("techandfi.com/wp-content/uploads")
       expect(content).to include('src="/media/wp-content/uploads/2026/05/qwen3_web_search_result.png"')
-      expect(content).to include("/media/wp-content/uploads/2026/05/qwen3_web_search_result-300x169.png 300w")
+    end
+
+    it "rewrites uploads URLs in classic-editor HTML too" do
+      content = Post.find_by(slug: "2016-year-in-review").content
+
+      expect(content).not_to include("techandfi.com/wp-content/uploads")
+      expect(content).to include('src="/media/wp-content/uploads/2016/12/chart-300x200.jpg"')
+      expect(content).to include('href="/media/wp-content/uploads/2016/12/chart.jpg"')
+    end
+
+    it "leaves the image block byte-identical apart from the host, so Gutenberg still validates it" do
+      content = Post.find_by(slug: "local-llm-tool-calls").content
+
+      # srcset/sizes are added by WordPress at render time, never stored. Adding
+      # them here would make the block fail Gutenberg's validation on edit.
+      expect(content).not_to include("srcset", "sizes=")
+      expect(content).to include('<figure class="wp-block-image size-large">')
     end
 
     it "enqueues one fetch job per registered image" do
@@ -157,6 +172,56 @@ RSpec.describe Wordpress::Importer do
 
     it "creates no redirect when the permalink already matches the slug" do
       expect(Redirect.find_by(from_path: "/local-llm-tool-calls")).to be_nil
+    end
+  end
+
+  describe "when WordPress term IDs collide with existing records" do
+    # Importing a second site — or a sample export followed by the real one —
+    # brings term IDs already claimed under different slugs. This used to abort
+    # the whole import with a UNIQUE constraint violation.
+    it "imports anyway rather than aborting the run" do
+      Category.create!(name: "Unrelated", slug: "unrelated", wp_term_id: 3)
+
+      result = import
+
+      expect(result[:errors]).to be_empty
+      expect(Post.count).to eq(4)
+      expect(Category.find_by(slug: "ai")).to be_present
+    end
+
+    it "treats the WordPress id as identity, so a renamed category updates in place" do
+      Category.create!(name: "Old Name", slug: "old-name", wp_term_id: 3)
+
+      import
+
+      expect(Category.find_by(wp_term_id: 3)).to have_attributes(name: "AI", slug: "ai")
+      expect(Category.find_by(slug: "old-name")).to be_nil
+    end
+
+    it "anchors on the slug when the id points at a different existing record" do
+      # Exactly the shape a second import produces: term 3 belongs to one row
+      # while the incoming slug belongs to another. Following the id would
+      # rename "squatter" to "ai" and collide.
+      Category.create!(name: "Squatter", slug: "squatter", wp_term_id: 3)
+      Category.create!(name: "AI", slug: "ai")
+
+      result = import
+
+      expect(result[:errors]).to be_empty
+      expect(Category.find_by(slug: "squatter")).to be_present
+      expect(Category.find_by(slug: "ai")).to be_present
+    end
+
+    it "drops the incoming id when a different record already holds it" do
+      # Matched by slug, but term 3 belongs to something else — the unique
+      # index wins over provenance rather than aborting the import.
+      Category.create!(name: "Squatter", slug: "squatter", wp_term_id: 3)
+      Category.create!(name: "AI", slug: "ai")
+
+      import
+
+      expect(Category.find_by(slug: "squatter").wp_term_id).to eq(3)
+      expect(Category.find_by(slug: "ai").wp_term_id).to be_nil
     end
   end
 

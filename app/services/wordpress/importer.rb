@@ -70,14 +70,15 @@ module Wordpress
       def import_categories
         # Two passes so a child can reference a parent defined after it.
         document.categories.each do |term|
-          record = Category.find_or_initialize_by(slug: term.slug)
+          record = find_term(Category, term)
           existed = record.persisted?
           record.assign_attributes(name: term.name.presence || term.slug,
+                                   slug: term.slug,
                                    description: term.description.presence,
-                                   wp_term_id: term.wp_term_id)
+                                   wp_term_id: available_term_id(Category, term.wp_term_id, record))
           record.save!
           track(:categories, existed ? :updated : :created)
-        rescue ActiveRecord::RecordInvalid => e
+        rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique => e
           note_error("category #{term.slug}", e)
           track(:categories, :failed)
         end
@@ -93,16 +94,44 @@ module Wordpress
 
       def import_tags
         document.tags.each do |term|
-          record = Tag.find_or_initialize_by(slug: term.slug)
+          record = find_term(Tag, term)
           existed = record.persisted?
           record.assign_attributes(name: term.name.presence || term.slug,
-                                   wp_term_id: term.wp_term_id)
+                                   slug: term.slug,
+                                   wp_term_id: available_term_id(Tag, term.wp_term_id, record))
           record.save!
           track(:tags, existed ? :updated : :created)
-        rescue ActiveRecord::RecordInvalid => e
+        rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique => e
           note_error("tag #{term.slug}", e)
           track(:tags, :failed)
         end
+      end
+
+      # WordPress term IDs are the stable identity, so they normally win over
+      # slugs — a renamed category should update in place rather than duplicate.
+      #
+      # The exception is when the id and the slug point at *different* existing
+      # rows, which happens after importing two sites or re-using a database.
+      # Following the id there would rename one row onto the other's slug and
+      # violate the unique index, so the slug is the safer anchor.
+      def find_term(model, term)
+        by_id = term.wp_term_id.present? ? model.find_by(wp_term_id: term.wp_term_id) : nil
+        by_slug = term.slug.present? ? model.find_by(slug: term.slug) : nil
+
+        return by_slug if by_id && by_slug && by_id != by_slug
+
+        by_id || by_slug || model.new
+      end
+
+      # Importing a second site (or a fixture followed by the real export) can
+      # bring term IDs already claimed by an unrelated record. The unique index
+      # matters more than the provenance, so the ID is dropped rather than
+      # aborting the run.
+      def available_term_id(model, wp_term_id, record)
+        return nil if wp_term_id.blank?
+
+        clash = model.where(wp_term_id: wp_term_id).where.not(id: record.id).exists?
+        clash ? nil : wp_term_id
       end
 
       # --- media ----------------------------------------------------------
@@ -246,7 +275,7 @@ module Wordpress
 
           by_wp_id[source.wp_comment_id] = comment if source.wp_comment_id
           track(:comments, existed ? :updated : :created)
-        rescue ActiveRecord::RecordInvalid => e
+        rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique => e
           note_error("comment #{source.wp_comment_id} on #{post.slug}", e)
           track(:comments, :failed)
         end
@@ -278,7 +307,7 @@ module Wordpress
         redirect.to_path = "/#{post.slug}"
         redirect.save!
         track(:redirects, :created)
-      rescue ActiveRecord::RecordInvalid => e
+      rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique => e
         note_error("redirect for #{post.slug}", e)
       end
   end

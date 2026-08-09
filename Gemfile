@@ -67,8 +67,11 @@ group :development do
   gem "web-console"
 end
 
-group :development, :test do
+group :development do
   # Loads .env so local runs get the KANTAN_* settings without exporting them.
   # Production takes its configuration from Kamal secrets instead.
+  #
+  # Deliberately not in :test — otherwise the suite inherits real credentials
+  # and would push objects into the production bucket.
   gem "dotenv-rails"
 end

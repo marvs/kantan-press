@@ -6,6 +6,28 @@ module Admin
       @counts = MediaItem.group(:status).count
     end
 
+    # Called by the block editor's image block. Returns the shape Gutenberg's
+    # media upload contract expects, so the block renders immediately.
+    def upload
+      media_item = MediaUploader.new.call(params[:file])
+
+      render json: {
+        id: media_item.id,
+        url: media_item.url,
+        link: media_item.url,
+        alt: media_item.alt_text.to_s,
+        caption: "",
+        title: media_item.title.to_s,
+        mime: media_item.content_type,
+        type: media_item.content_type.to_s.split("/").first,
+        subtype: media_item.content_type.to_s.split("/").last
+      }, status: :created
+    rescue MediaUploader::Error => e
+      render json: { error: e.message }, status: :unprocessable_content
+    rescue ObjectStore::UploadError => e
+      render json: { error: e.message }, status: :bad_gateway
+    end
+
     def destroy
       media_item = MediaItem.find(params[:id])
       ObjectStore.current.delete(media_item.key) if media_item.stored?

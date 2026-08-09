@@ -216,6 +216,93 @@ input[type=text], input[type=email], input[type=password], input[type=datetime-l
 textarea { font-family: var(--mono); font-size: 0.85rem; line-height: 1.55; resize: vertical; }
 textarea.content-editor { min-height: 30rem; }
 
+/* --- block editor ---------------------------------------------------------
+   wp.attachEditor hides the textarea and inserts .editor right after it. These
+   rules only handle placement; the vendored bundle ships its own chrome. */
+
+.block-editor-placeholder {
+  border: 1px solid #c8ccd3;
+  border-radius: 4px;
+  background: #fff;
+  padding: 2rem 1.25rem;
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+}
+
+.field .editor {
+  border: 1px solid #c8ccd3;
+  border-radius: 4px;
+  background: #fff;
+  min-height: 34rem;
+  overflow: visible;
+}
+
+.field .editor .editor-styles-wrapper {
+  font-family: var(--serif);
+  font-size: 1.02rem;
+  line-height: 1.7;
+}
+
+/* Centre the document column. Scoped to the root container on purpose:
+   Gutenberg puts block-list__layout on nested containers too — including every
+   list item — so an unscoped rule pads each bullet by 24/48px. */
+.field .editor .block-editor-block-list__layout.is-root-container {
+  max-width: 46rem;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 3rem;
+}
+
+.field .editor .block-editor-writing-flow { min-height: 26rem; }
+
+/* The vendored bundle ships no layout rules for its own header regions, so the
+   toolbar and the settings buttons stack at the left instead of forming a row.
+   These six rules are the whole fix. */
+.field .editor .editor-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.25rem 0.5rem;
+  border-bottom: 1px solid var(--rule);
+  min-height: 3rem;
+}
+
+.field .editor .editor-header__toolbar,
+.field .editor .editor-header__settings {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.field .editor .editor-header__settings { margin-left: auto; }
+
+/* Gutenberg treats each list item as its own block, so the editor's default
+   block spacing lands between bullets and the list sprawls. Only the list as a
+   whole should carry that gap. */
+.field .editor li.block-editor-block-list__block {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.field .editor ul.block-editor-block-list__block,
+.field .editor ol.block-editor-block-list__block { padding-left: 1.5rem; }
+
+/* Post metadata sits below the full-width editor rather than beside it. */
+.post-meta-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
+  gap: 1.25rem;
+  margin-top: 1.5rem;
+}
+
+.post-meta-grid .card + .card { margin-top: 0; }
+
+input.title-field {
+  font-family: var(--serif);
+  font-size: 1.35rem;
+  padding: 0.6rem 0.7rem;
+}
+
 select[multiple] { min-height: 8rem; }
 
 .btn, button, input[type=submit] {

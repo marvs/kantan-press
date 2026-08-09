@@ -1,0 +1,8 @@
+<%# The vendored Gutenberg bundle. React must be a global before it loads, and
+    the bundle is large, so both are deferred and only pulled in on the two
+    pages that actually host an editor. %>
+<%= stylesheet_link_tag "core", "isolated-block-editor", "data-turbo-track": "reload" %>
+<%= javascript_include_tag "react", defer: true %>
+<%= javascript_include_tag "react-dom", defer: true %>
+<%= javascript_include_tag "isolated-block-editor", defer: true %>
+<%= javascript_include_tag "block_editor", defer: true %>

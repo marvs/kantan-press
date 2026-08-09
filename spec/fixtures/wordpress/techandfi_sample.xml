@@ -85,7 +85,7 @@
 <!-- /wp:paragraph -->
 
 <!-- wp:image {"id":901,"sizeSlug":"large"} -->
-<figure class="wp-block-image size-large"><img src="https://techandfi.com/wp-content/uploads/2026/05/qwen3_web_search_result.png" alt="Qwen3 web search result" class="wp-image-901" srcset="https://techandfi.com/wp-content/uploads/2026/05/qwen3_web_search_result.png 1920w, https://techandfi.com/wp-content/uploads/2026/05/qwen3_web_search_result-300x169.png 300w, https://techandfi.com/wp-content/uploads/2026/05/qwen3_web_search_result-1024x576.png 1024w" sizes="(max-width: 1920px) 100vw, 1920px" /></figure>
+<figure class="wp-block-image size-large"><img src="https://techandfi.com/wp-content/uploads/2026/05/qwen3_web_search_result.png" alt="Qwen3 web search result" class="wp-image-901"/></figure>
 <!-- /wp:image -->
 
 <!-- wp:code -->
@@ -134,7 +134,8 @@
     <dc:creator><![CDATA[marvs]]></dc:creator>
     <guid isPermaLink="false">https://techandfi.com/?p=42</guid>
     <content:encoded><![CDATA[<p>A look back at 2016.</p>
-<p><img src="https://techandfi.com/wp-content/uploads/2016/12/chart.jpg" alt="Chart" /></p>]]></content:encoded>
+<p><img class="alignnone size-medium wp-image-43" src="https://techandfi.com/wp-content/uploads/2016/12/chart-300x200.jpg" alt="Chart" width="300" height="200" /></p>
+<p>And the full-size version: <a href="https://techandfi.com/wp-content/uploads/2016/12/chart.jpg">chart.jpg</a></p>]]></content:encoded>
     <excerpt:encoded><![CDATA[A look back at 2016.]]></excerpt:encoded>
     <wp:post_id>42</wp:post_id>
     <wp:post_date><![CDATA[2016-12-31 10:00:00]]></wp:post_date>

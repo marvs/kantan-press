@@ -8,80 +8,84 @@
     </div>
   <% end %>
 
-  <div class="row">
-    <div class="main">
-      <div class="field">
-        <%= form.label :title %>
-        <%= form.text_field :title, placeholder: "Post title" %>
-      </div>
+  <div class="field">
+    <%= form.label :title %>
+    <%= form.text_field :title, placeholder: "Post title", class: "title-field" %>
+  </div>
 
-      <div class="field">
-        <%= form.label :content, "Content" %>
-        <%= form.text_area :content, class: "content-editor", spellcheck: false %>
-        <p class="hint">
-          WordPress block markup. Block delimiters are HTML comments, so this is
-          stored and served verbatim — imported posts keep byte-for-byte fidelity.
-        </p>
-      </div>
+  <%# The editor needs the full width of the page: it renders its own toolbar
+      and popovers, which collide with anything sharing the row. Post metadata
+      therefore sits below rather than alongside. %>
+  <div class="field">
+    <%= form.label :content, "Content" %>
 
-      <div class="field">
-        <%= form.label :excerpt %>
-        <%= form.text_area :excerpt, rows: 3 %>
-        <p class="hint">Shown on the index and in the feed. Left blank, the body is trimmed instead.</p>
+    <%# wp.attachEditor hides this and inserts the editor immediately after it,
+        writing serialised block markup back into it on every change. %>
+    <%= form.text_area :content, class: "content-editor", spellcheck: false, id: "post_content" %>
+
+    <div class="block-editor-placeholder" data-editor-placeholder>Loading the editor…</div>
+
+    <p class="hint">
+      WordPress block markup, stored and served verbatim — imported posts keep
+      byte-for-byte fidelity on blocks you don't touch.
+      <a href="#" data-toggle-source>Edit as source</a>
+    </p>
+  </div>
+
+  <div class="post-meta-grid">
+    <div class="card">
+      <div class="card-head">Publishing</div>
+      <div class="card-body">
+        <div class="field">
+          <%= form.label :status %>
+          <%= form.select :status, Post.statuses.keys.map { |s| [ s.humanize, s ] } %>
+        </div>
+        <div class="field">
+          <%= form.label :post_type, "Type" %>
+          <%= form.select :post_type, Post.post_types.keys.map { |t| [ t.humanize, t ] } %>
+        </div>
+        <div class="field">
+          <%= form.label :published_at, "Publish date" %>
+          <%= form.datetime_field :published_at %>
+        </div>
+        <div class="field">
+          <%= form.label :slug %>
+          <%= form.text_field :slug, placeholder: "generated-from-title" %>
+          <p class="hint">Changing this breaks existing links unless you add a redirect.</p>
+        </div>
       </div>
     </div>
 
-    <div class="side">
-      <div class="card">
-        <div class="card-head">Publishing</div>
-        <div class="card-body">
-          <div class="field">
-            <%= form.label :status %>
-            <%= form.select :status, Post.statuses.keys.map { |s| [ s.humanize, s ] } %>
-          </div>
-          <div class="field">
-            <%= form.label :post_type, "Type" %>
-            <%= form.select :post_type, Post.post_types.keys.map { |t| [ t.humanize, t ] } %>
-          </div>
-          <div class="field">
-            <%= form.label :published_at, "Publish date" %>
-            <%= form.datetime_field :published_at %>
-          </div>
-          <div class="field">
-            <%= form.label :slug %>
-            <%= form.text_field :slug, placeholder: "generated-from-title" %>
-            <p class="hint">Changing this breaks existing links unless you add a redirect.</p>
-          </div>
+    <div class="card">
+      <div class="card-head">Taxonomy</div>
+      <div class="card-body">
+        <div class="field">
+          <%= form.label :category_ids, "Categories" %>
+          <%= form.collection_select :category_ids, Category.alphabetical, :id, :name, {}, multiple: true %>
+        </div>
+        <div class="field">
+          <%= form.label :tag_ids, "Tags" %>
+          <%= form.collection_select :tag_ids, Tag.alphabetical, :id, :name, {}, multiple: true %>
         </div>
       </div>
+    </div>
 
-      <div class="card">
-        <div class="card-head">Taxonomy</div>
-        <div class="card-body">
-          <div class="field">
-            <%= form.label :category_ids, "Categories" %>
-            <%= form.collection_select :category_ids, Category.alphabetical, :id, :name,
-                  {}, multiple: true %>
-          </div>
-          <div class="field">
-            <%= form.label :tag_ids, "Tags" %>
-            <%= form.collection_select :tag_ids, Tag.alphabetical, :id, :name, {}, multiple: true %>
-          </div>
+    <div class="card">
+      <div class="card-head">Featured image &amp; excerpt</div>
+      <div class="card-body">
+        <div class="field">
+          <%= form.collection_select :featured_media_item_id,
+                MediaItem.stored.recent.limit(200), :id, :filename,
+                { include_blank: "No featured image" } %>
         </div>
-      </div>
-
-      <div class="card">
-        <div class="card-head">Featured image</div>
-        <div class="card-body">
-          <div class="field">
-            <%= form.collection_select :featured_media_item_id,
-                  MediaItem.stored.recent.limit(200), :id, :filename,
-                  { include_blank: "None" } %>
-          </div>
-          <% if post.featured_media_item %>
-            <%= image_tag post.featured_media_item.url, class: "thumb",
-                  style: "width:100%;height:auto", loading: "lazy" %>
-          <% end %>
+        <% if post.featured_media_item&.stored? %>
+          <%= image_tag post.featured_media_item.url, loading: "lazy",
+                style: "width:100%;height:auto;border-radius:3px;margin-bottom:0.75rem" %>
+        <% end %>
+        <div class="field">
+          <%= form.label :excerpt %>
+          <%= form.text_area :excerpt, rows: 3 %>
+          <p class="hint">Left blank, the body is trimmed instead.</p>
         </div>
       </div>
     </div>

@@ -1,4 +1,7 @@
 <% content_for :title, @post.title %>
+<% content_for :head do %>
+  <%= render "admin/posts/editor_assets" %>
+<% end %>
 
 <div class="admin-head">
   <h1>Edit post</h1>

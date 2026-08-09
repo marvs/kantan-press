@@ -145,13 +145,44 @@ The importer is covered against a fixture that mirrors a real export: Gutenberg
 and classic posts side by side, srcset variants, PHP-serialized attachment
 metadata, threaded comments, spam, a page, a draft and a revision.
 
+## The editor
+
+Posts are edited in the real Gutenberg block editor, via Automattic's
+[isolated-block-editor](https://github.com/Automattic/isolated-block-editor).
+
+It is vendored as a **prebuilt browser bundle** in `vendor/editor/` rather than
+compiled here. The `@wordpress/*` packages ship ESM with incorrect export maps,
+which webpack tolerates and rolldown (Vite 8's bundler) correctly rejects;
+Automattic publishes the prebuilt bundle precisely so consumers do not have to
+fight that. The upshot is that Kantan Press has **no JavaScript build step and
+needs no Node at deploy time** — `assets:precompile` is the whole story.
+
+Node 22 is only required to refresh that bundle (`bin/rails kantan:vendor_editor`),
+and is pinned in `.nvmrc`, `package.json` engines, and `.npmrc`.
+
+`wp.attachEditor` binds the editor to the content textarea: it parses block
+markup on load, runs classic-editor HTML through `rawHandler`, and writes
+serialised markup back to the field on every change. The surrounding Rails form
+submits normally, so **no JavaScript sits on the save path**. "Edit as source"
+reveals the raw textarea when hand-editing markup is quicker.
+
+Images dropped into the editor upload to `POST /admin/media_items/upload`, which
+files them under the same `wp-content/uploads/YYYY/MM/` convention as imported
+media so the bucket has one key scheme throughout.
+
+### One fidelity note
+
+WordPress adds `srcset` and `sizes` at *render* time, not in stored content, so
+a WXR export's image blocks carry neither — and Kantan Press keeps them that
+way. Storing srcset in content would make Gutenberg flag the block as "invalid"
+on edit. The consequence is that imported images serve at a single size rather
+than responsively; the generated variants are still fetched into the bucket
+whenever a post references them directly, which classic-editor posts often do.
+
 ## Not here yet
 
-- **A block editor.** Post bodies are edited as block markup in a textarea.
-  Because the stored format is exactly what Gutenberg reads and writes,
-  `@wordpress/block-editor` can be mounted over that field without any data
-  migration.
 - **Accepting new comments.** Imported ones display read-only; there is no
   submission form and so no spam handling to own.
 - **Static generation.** The public side is server-rendered and cheap to cache;
   freezing it to files is a rake task away because the controllers are pure.
+- **Responsive images.** See the fidelity note above.

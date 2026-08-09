@@ -1,7 +1,15 @@
 require "rails_helper"
 
 RSpec.describe "Admin::Imports" do
-  before { sign_in }
+  # Uploads go to a throwaway directory. Pointing this at the real
+  # storage/imports and cleaning up afterwards would delete exports the
+  # developer had actually uploaded.
+  let(:upload_dir) { Rails.root.join("tmp/spec-imports-#{SecureRandom.hex(4)}") }
+
+  before do
+    stub_const("Admin::ImportsController::UPLOAD_DIR", upload_dir)
+    sign_in
+  end
 
   let(:fixture) { Rails.root.join("spec/fixtures/wordpress/techandfi_sample.xml") }
 
@@ -46,7 +54,7 @@ RSpec.describe "Admin::Imports" do
   end
 
   after do
-    FileUtils.rm_rf(Admin::ImportsController::UPLOAD_DIR)
+    FileUtils.rm_rf(upload_dir)
   end
 end
 

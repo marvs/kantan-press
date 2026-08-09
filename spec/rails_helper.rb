@@ -40,11 +40,18 @@ RSpec.configure do |config|
   config.include FactoryBot::Syntax::Methods
 
   config.include ActiveJob::TestHelper
+  config.include ActiveSupport::Testing::TimeHelpers
 
   # Every example gets an in-memory object store, so nothing touches the disk
   # or a real bucket unless a spec opts in.
   config.before do
     ObjectStore.current = FakeObjectStore.new
+
+    # Belt and braces alongside keeping dotenv out of :test — the suite must
+    # never inherit a developer's real bucket or CDN host.
+    allow(KantanPress::Config).to receive(:storage_backend).and_return(:disk)
+    allow(KantanPress::Config).to receive(:media_base_url).and_return("/media")
+    allow(KantanPress::Config).to receive(:legacy_site_url).and_return(nil)
 
     # The test adapter's queue is global, so without this jobs enqueued by one
     # example are still counted by the next.

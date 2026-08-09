@@ -14,7 +14,10 @@ Rails.application.routes.draw do
 
     resources :media_items, only: [ :index, :destroy ] do
       member { post :retry_fetch }
-      collection { post :retry_all_failed }
+      collection do
+        post :retry_all_failed
+        post :upload
+      end
     end
 
     resources :imports, only: [ :index, :new, :create, :show ]
