@@ -63,7 +63,16 @@ RSpec.describe "block rendering" do
                            .map { |selector, body| [ selector.strip, body.strip ] }
     end
 
+    # A CSS class name may contain hyphens and underscores, so plain substring
+    # matching would treat ".wp-block-embed__learn-more" as a mention of
+    # ".wp-block-embed". The boundary keeps them distinct.
+    def self.class_pattern(css_class)
+      /\.#{Regexp.escape(css_class)}(?![\w-])/
+    end
+
     def self.subjects_for(css_class)
+      pattern = class_pattern(css_class)
+
       rules.select do |selector, body|
         next false if body.empty?
 
@@ -72,13 +81,15 @@ RSpec.describe "block rendering" do
                         .gsub(/:has\([^)]*\)/, "")   # :has(> iframe) hides the real subject
                         .split(/[\s>+~]+/).last.to_s
 
-          subject.include?(".#{css_class}")
+          subject.match?(pattern)
         end
       end
     end
 
     def self.mentions_for(css_class)
-      rules.select { |selector, body| !body.empty? && selector.include?(".#{css_class}") }
+      pattern = class_pattern(css_class)
+
+      rules.select { |selector, body| !body.empty? && selector.match?(pattern) }
     end
 
     BLOCK_SAMPLES.each do |css_class, sample|

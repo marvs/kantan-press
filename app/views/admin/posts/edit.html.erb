@@ -1,11 +1,7 @@
 <% content_for :title, @post.title %>
+<% content_for :admin_main_class, "admin-main-wide" %>
 <% content_for :head do %>
   <%= render "admin/posts/editor_assets" %>
 <% end %>
 
-<div class="admin-head">
-  <h1>Edit post</h1>
-  <%= link_to "Back to posts", admin_posts_path, class: "btn btn-secondary" %>
-</div>
-
-<%= render "form", post: @post %>
+<%= render "form", post: @post, heading: "Edit post" %>

@@ -33,7 +33,7 @@
       </div>
     <% end %>
 
-    <main class="admin-main">
+    <main class="admin-main <%= content_for(:admin_main_class) %>">
       <%= yield %>
     </main>
   </body>
