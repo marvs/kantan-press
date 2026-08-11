@@ -26,6 +26,18 @@ class Post < ApplicationRecord
 
   def approved_comments = comments.where(approved: true).order(:published_at)
 
+  # Comma-separated tag names, so the admin can create tags inline instead of
+  # only picking from ones that already exist.
+  def add_tag_names(names)
+    Array(names.to_s.split(",")).filter_map do |raw|
+      name = raw.strip
+      next if name.blank?
+
+      tag = Tag.find_by(slug: name.parameterize) || Tag.create!(name: name)
+      tags << tag unless tags.include?(tag)
+    end
+  end
+
   private
     def set_published_at
       self.published_at ||= Time.current if published?

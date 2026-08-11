@@ -61,31 +61,88 @@
       <div class="card-body">
         <div class="field">
           <%= form.label :category_ids, "Categories" %>
-          <%= form.collection_select :category_ids, Category.alphabetical, :id, :name, {}, multiple: true %>
+          <div class="check-list">
+            <%= form.collection_check_boxes :category_ids, selected_first(Category.alphabetical, post.category_ids), :id, :name do |b| %>
+              <label class="check-item"><%= b.check_box %> <%= b.text %></label>
+            <% end %>
+          </div>
         </div>
+
         <div class="field">
           <%= form.label :tag_ids, "Tags" %>
-          <%= form.collection_select :tag_ids, Tag.alphabetical, :id, :name, {}, multiple: true %>
+          <div class="check-list">
+            <% if Tag.exists? %>
+              <%= form.collection_check_boxes :tag_ids, selected_first(Tag.alphabetical, post.tag_ids), :id, :name do |b| %>
+                <label class="check-item"><%= b.check_box %> <%= b.text %></label>
+              <% end %>
+            <% else %>
+              <p class="empty" style="margin:0">No tags yet.</p>
+            <% end %>
+          </div>
+        </div>
+
+        <div class="field">
+          <%= label_tag "post_new_tag_names", "Add new tags" %>
+          <%= text_field_tag "post[new_tag_names]", nil, id: "post_new_tag_names",
+                placeholder: "comma, separated" %>
+          <p class="hint">Created and attached on save.</p>
         </div>
       </div>
     </div>
 
     <div class="card">
-      <div class="card-head">Featured image &amp; excerpt</div>
+      <div class="card-head">Featured image</div>
+      <div class="card-body">
+        <div class="media-picker" data-media-picker>
+          <div class="media-current">
+            <% if post.featured_media_item&.stored? %>
+              <%= image_tag post.featured_media_item.url, loading: "lazy",
+                    alt: post.featured_media_item.alt_text.to_s, data: { media_preview: true } %>
+              <div class="muted mono"><%= post.featured_media_item.filename %></div>
+            <% else %>
+              <div class="media-empty" data-media-preview-empty>No featured image</div>
+            <% end %>
+          </div>
+
+          <div class="field">
+            <%= form.label :featured_image, "Upload a new image" %>
+            <%= form.file_field :featured_image, accept: "image/*" %>
+            <p class="hint">Goes to the same bucket and key scheme as imported media.</p>
+          </div>
+
+          <div class="field">
+            <%= label_tag "media-filter", "Or choose an existing one" %>
+            <%= text_field_tag "media-filter", nil, placeholder: "Filter by filename…",
+                  data: { media_filter: true }, autocomplete: "off" %>
+          </div>
+
+          <div class="media-grid" data-media-grid>
+            <label class="media-option">
+              <%= form.radio_button :featured_media_item_id, "" %>
+              <span class="media-none">None</span>
+            </label>
+
+            <% MediaItem.stored.recent.limit(300).each do |item| %>
+              <label class="media-option" data-filename="<%= item.filename.downcase %>">
+                <%= form.radio_button :featured_media_item_id, item.id %>
+                <%= image_tag item.url, loading: "lazy", alt: item.alt_text.to_s,
+                      title: item.filename %>
+              </label>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">Excerpt</div>
       <div class="card-body">
         <div class="field">
-          <%= form.collection_select :featured_media_item_id,
-                MediaItem.stored.recent.limit(200), :id, :filename,
-                { include_blank: "No featured image" } %>
-        </div>
-        <% if post.featured_media_item&.stored? %>
-          <%= image_tag post.featured_media_item.url, loading: "lazy",
-                style: "width:100%;height:auto;border-radius:3px;margin-bottom:0.75rem" %>
-        <% end %>
-        <div class="field">
-          <%= form.label :excerpt %>
-          <%= form.text_area :excerpt, rows: 3 %>
-          <p class="hint">Left blank, the body is trimmed instead.</p>
+          <%= form.text_area :excerpt, rows: 6, class: "excerpt-editor", spellcheck: false %>
+          <p class="hint">
+            HTML is allowed and rendered as-is on the index and in the feed.
+            Left blank, the body is trimmed instead.
+          </p>
         </div>
       </div>
     </div>

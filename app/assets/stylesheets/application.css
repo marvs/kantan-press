@@ -228,8 +228,12 @@ a { color: var(--accent); }
 /* Spacer height comes from an inline style; this only stops floats bleeding. */
 .post-body .wp-block-spacer { clear: both; }
 
-/* Tables */
-.post-body .wp-block-table { margin: 2rem 0; overflow-x: auto; }
+/* Tables. Older exports put the block class straight on the <table>; newer
+   ones wrap it in a <figure>. This content has both. */
+.post-body .wp-block-table { margin: 2rem 0; }
+.post-body figure.wp-block-table { overflow-x: auto; }
+
+.post-body table.wp-block-table,
 .post-body .wp-block-table table { width: 100%; border-collapse: collapse; }
 
 .post-body .wp-block-table.is-style-stripes tbody tr:nth-child(odd) {
@@ -432,6 +436,93 @@ input.title-field {
   font-size: 1.35rem;
   padding: 0.6rem 0.7rem;
 }
+
+textarea.excerpt-editor { min-height: 7rem; }
+
+/* Taxonomy checkboxes — a native multi-select hides most options and needs
+   ctrl-click to combine them, which nobody guesses. */
+.check-list {
+  border: 1px solid #c8ccd3;
+  border-radius: 4px;
+  background: #fff;
+  padding: 0.5rem 0.6rem;
+  max-height: 12rem;
+  overflow-y: auto;
+}
+
+.check-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.2rem 0;
+  font-size: 0.88rem;
+  font-weight: 400;
+  cursor: pointer;
+}
+
+.check-item input[type="checkbox"] { width: auto; margin: 0; }
+
+/* Featured image picker */
+.media-current {
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  background: var(--bg-soft);
+  padding: 0.5rem;
+  margin-bottom: 0.9rem;
+  text-align: center;
+}
+
+.media-current img {
+  max-width: 100%;
+  max-height: 11rem;
+  height: auto;
+  border-radius: 3px;
+}
+
+.media-empty { color: var(--ink-soft); font-size: 0.85rem; padding: 1.75rem 0; }
+
+.media-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(4.25rem, 1fr));
+  gap: 0.4rem;
+  max-height: 15rem;
+  overflow-y: auto;
+  border: 1px solid #c8ccd3;
+  border-radius: 4px;
+  padding: 0.45rem;
+  background: #fff;
+}
+
+.media-option { cursor: pointer; position: relative; display: block; }
+.media-option[hidden] { display: none; }
+.media-option input[type="radio"] { position: absolute; opacity: 0; pointer-events: none; }
+
+.media-option img,
+.media-option .media-none {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border: 2px solid transparent;
+  border-radius: 3px;
+  background: var(--bg-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  color: var(--ink-soft);
+}
+
+.media-option:hover img,
+.media-option:hover .media-none { border-color: #c8ccd3; }
+
+.media-option input[type="radio"]:checked ~ img,
+.media-option input[type="radio"]:checked ~ .media-none {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(29, 78, 216, 0.2);
+}
+
+.row-actions { display: flex; gap: 0.35rem; align-items: center; }
+.row-actions form { margin: 0; }
 
 select[multiple] { min-height: 8rem; }
 

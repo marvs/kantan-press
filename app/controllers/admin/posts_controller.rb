@@ -15,10 +15,10 @@ module Admin
     end
 
     def create
-      @post = Post.new(post_params)
+      @post = Post.new(post_attributes)
       @post.author ||= Current.user
 
-      if @post.save
+      if apply_media_and_tags(@post) && @post.save
         redirect_to edit_admin_post_path(@post), notice: "Post created."
       else
         render :new, status: :unprocessable_content
@@ -28,7 +28,9 @@ module Admin
     def edit; end
 
     def update
-      if @post.update(post_params)
+      @post.assign_attributes(post_attributes)
+
+      if apply_media_and_tags(@post) && @post.save
         redirect_to edit_admin_post_path(@post), notice: "Post saved."
       else
         render :edit, status: :unprocessable_content
@@ -55,10 +57,31 @@ module Admin
         @post = Post.find(params[:id])
       end
 
+      # featured_image and new_tag_names are permitted so that a submission
+      # carrying only one of them still satisfies expect, then dropped before
+      # assignment since neither is a column.
       def post_params
         params.expect(post: [ :title, :slug, :content, :excerpt, :status, :post_type,
                               :published_at, :featured_media_item_id,
+                              :featured_image, :new_tag_names,
                               { category_ids: [], tag_ids: [] } ])
+      end
+
+      def post_attributes
+        post_params.except(:featured_image, :new_tag_names)
+      end
+
+      # The upload has to reach the object store before the post can reference
+      # it, and tags may need creating, so both happen before save.
+      def apply_media_and_tags(post)
+        upload = post_params[:featured_image]
+
+        post.featured_media_item = MediaUploader.new.call(upload) if upload.present?
+        post.add_tag_names(post_params[:new_tag_names])
+        true
+      rescue MediaUploader::Error, ObjectStore::UploadError => e
+        post.errors.add(:base, "Featured image: #{e.message}")
+        false
       end
   end
 end

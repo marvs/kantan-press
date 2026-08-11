@@ -9,13 +9,20 @@ module PostsHelper
     post.content.to_s.html_safe
   end
 
-  # Falls back to trimming the body when a post has no explicit excerpt —
-  # WordPress leaves excerpt:encoded empty unless one was written by hand.
+  # A hand-written excerpt may contain markup, as WordPress allows, so it is
+  # rendered rather than escaped. Falls back to trimming the body, which
+  # WordPress leaves empty unless an excerpt was written by hand.
   def post_excerpt(post, length: 220)
-    return post.excerpt if post.excerpt.present?
+    return post.excerpt.html_safe if post.excerpt.present?
 
-    plain = strip_tags(post.content.to_s.gsub(/<!--.*?-->/m, " ")).squish
-    truncate(plain, length: length, separator: " ")
+    truncate(excerpt_plain_text(post), length: length, separator: " ")
+  end
+
+  # Plain text version for meta tags and anywhere markup would be wrong.
+  def excerpt_plain_text(post, length: 220)
+    source = post.excerpt.presence || post.content.to_s.gsub(/<!--.*?-->/m, " ")
+
+    truncate(strip_tags(source).squish, length: length, separator: " ")
   end
 
   def post_date(post)

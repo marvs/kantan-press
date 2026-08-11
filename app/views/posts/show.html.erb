@@ -1,7 +1,7 @@
 <% content_for :title, @post.title %>
 
 <% content_for :head do %>
-  <meta name="description" content="<%= post_excerpt(@post, length: 160) %>">
+  <meta name="description" content="<%= excerpt_plain_text(@post, length: 160) %>">
   <meta property="og:title" content="<%= @post.title %>">
   <meta property="og:type" content="article">
   <meta property="og:url" content="<%= post_url(@post.slug) %>">

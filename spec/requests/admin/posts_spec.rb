@@ -106,5 +106,111 @@ RSpec.describe "Admin::Posts" do
 
       expect { delete admin_post_path(record) }.to change(Post, :count).by(-1)
     end
+
+    it "offers a link to the live page for published posts only" do
+      published = create(:post, slug: "live-one", title: "Live one")
+      create(:post, :draft, title: "Draft one")
+
+      get admin_posts_path
+
+      expect(response.body).to include(%(href="/#{published.slug}"))
+      expect(response.body).to include("View")
+    end
+
+    describe "taxonomy controls" do
+      it "renders categories and tags as checkboxes rather than a multi-select" do
+        create(:category, name: "AI")
+        create(:tag, name: "LLM")
+
+        get new_admin_post_path
+
+        expect(response.body).to include('type="checkbox"')
+        expect(response.body).to include("check-list")
+        expect(response.body).not_to include("multiple=\"multiple\"")
+      end
+
+      it "creates and attaches tags typed inline" do
+        record = create(:post)
+
+        patch admin_post_path(record), params: { post: { new_tag_names: "Ruby, Local LLMs" } }
+
+        expect(record.reload.tags.map(&:name)).to contain_exactly("Ruby", "Local LLMs")
+      end
+
+      it "reuses an existing tag rather than duplicating it" do
+        existing = create(:tag, name: "Ruby")
+        record = create(:post)
+
+        expect {
+          patch admin_post_path(record), params: { post: { new_tag_names: "ruby" } }
+        }.not_to change(Tag, :count)
+
+        expect(record.reload.tags).to eq([ existing ])
+      end
+
+      it "ignores blank entries in the tag list" do
+        record = create(:post)
+
+        patch admin_post_path(record), params: { post: { new_tag_names: "Ruby, , ,  " } }
+
+        expect(record.reload.tags.map(&:name)).to eq([ "Ruby" ])
+      end
+    end
+
+    describe "featured image" do
+      def png_upload(filename: "hero.png")
+        Rack::Test::UploadedFile.new(
+          StringIO.new("\x89PNG\r\n\x1a\n data"), "image/png", original_filename: filename
+        )
+      end
+
+      it "shows a thumbnail grid of existing media" do
+        item = create(:media_item, :stored)
+
+        get new_admin_post_path
+
+        expect(response.body).to include("media-grid")
+        expect(response.body).to include(item.url)
+      end
+
+      it "leaves unstored media out of the picker" do
+        pending_item = create(:media_item)
+
+        get new_admin_post_path
+
+        expect(response.body).not_to include(pending_item.url)
+      end
+
+      it "uploads a new image and attaches it" do
+        record = create(:post)
+
+        expect {
+          patch admin_post_path(record), params: { post: { featured_image: png_upload } }
+        }.to change(MediaItem, :count).by(1)
+
+        expect(record.reload.featured_media_item).to eq(MediaItem.last)
+        expect(ObjectStore.current.exist?(MediaItem.last.key)).to be(true)
+      end
+
+      it "keeps other edits when the upload is rejected" do
+        record = create(:post, title: "Original")
+        bad = Rack::Test::UploadedFile.new(StringIO.new("x"), "application/pdf", original_filename: "a.pdf")
+
+        patch admin_post_path(record), params: { post: { title: "Changed", featured_image: bad } }
+
+        expect(response).to have_http_status(:unprocessable_content)
+        expect(record.reload.title).to eq("Original")
+        expect(response.body).to include("not an allowed image type")
+      end
+
+      it "clears the featured image when None is chosen" do
+        item = create(:media_item, :stored)
+        record = create(:post, featured_media_item: item)
+
+        patch admin_post_path(record), params: { post: { featured_media_item_id: "" } }
+
+        expect(record.reload.featured_media_item).to be_nil
+      end
+    end
   end
 end

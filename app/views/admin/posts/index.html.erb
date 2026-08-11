@@ -45,13 +45,17 @@
             <%= post.published_at ? l(post.published_at.to_date, format: :long) : "—" %>
           </td>
           <td>
-            <% if post.published? %>
-              <%= button_to "Unpublish", unpublish_admin_post_path(post), method: :patch,
-                    class: "btn btn-secondary btn-small" %>
-            <% else %>
-              <%= button_to "Publish", publish_admin_post_path(post), method: :patch,
-                    class: "btn btn-small" %>
-            <% end %>
+            <div class="row-actions">
+              <% if post.published? %>
+                <%= link_to "View", post_path(post.slug), class: "btn btn-secondary btn-small",
+                      target: "_blank", rel: "noopener" %>
+                <%= button_to "Unpublish", unpublish_admin_post_path(post), method: :patch,
+                      class: "btn btn-secondary btn-small" %>
+              <% else %>
+                <%= button_to "Publish", publish_admin_post_path(post), method: :patch,
+                      class: "btn btn-small" %>
+              <% end %>
+            </div>
           </td>
         </tr>
       <% end %>
