@@ -5,8 +5,13 @@ module PostsHelper
   #
   # This is the author's own content, so it is emitted unescaped, exactly as
   # WordPress served it.
+  # The one exception to serving content verbatim: WordPress resolves oEmbed
+  # blocks to an iframe at render time and stores only the URL, so without this
+  # a video renders as a line of plain text. The transformation happens here
+  # rather than at import so the stored markup stays exactly what Gutenberg
+  # reads and writes.
   def render_post_body(post)
-    post.content.to_s.html_safe
+    Wordpress::EmbedRenderer.call(post.content).html_safe
   end
 
   # A hand-written excerpt may contain markup, as WordPress allows, so it is

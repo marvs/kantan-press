@@ -243,15 +243,24 @@ a { color: var(--accent); }
 .post-body .wp-block-table.is-style-stripes td,
 .post-body .wp-block-table.is-style-stripes th { border-color: transparent; }
 
-/* Embeds. The 16:9 box is ready for whenever an oEmbed URL becomes an iframe. */
+/* Embeds. Wordpress::EmbedRenderer turns a stored oEmbed URL into an iframe at
+   render time; providers it doesn't handle keep the URL as readable text, so
+   the responsive box is applied only where an iframe actually exists. */
 .post-body .wp-block-embed { margin: 2rem 0; }
-.post-body .wp-block-embed__wrapper { position: relative; }
+.post-body .wp-block-embed__wrapper { word-break: break-word; }
 
-.post-body .wp-embed-aspect-16-9 .wp-block-embed__wrapper {
+.post-body .wp-block-embed__wrapper:has(> iframe) {
+  position: relative;
+  height: 0;
   padding-top: 56.25%;
 }
 
-.post-body .wp-embed-aspect-16-9 .wp-block-embed__wrapper > iframe {
+/* WordPress records the ratio as a class; this content uses 16:9 and 4:3. */
+.post-body .wp-embed-aspect-4-3 .wp-block-embed__wrapper:has(> iframe) { padding-top: 75%; }
+.post-body .wp-embed-aspect-1-1 .wp-block-embed__wrapper:has(> iframe) { padding-top: 100%; }
+.post-body .wp-embed-aspect-9-16 .wp-block-embed__wrapper:has(> iframe) { padding-top: 177.78%; }
+
+.post-body .wp-block-embed__wrapper > iframe {
   position: absolute;
   inset: 0;
   width: 100%;
