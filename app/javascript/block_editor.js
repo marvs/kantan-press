@@ -55,7 +55,13 @@
 
   var SETTINGS = {
     iso: {
-      moreMenu: { editor: true, fullscreen: false, preview: false, topToolbar: false },
+      // "Top toolbar" stays offered in the menu so it can be turned on, but it
+      // is off by default: when the block toolbar is docked in the header the
+      // library renders <BlockToolbar hideDragHandle />, which removes the drag
+      // grip and the between-blocks inserter that WordPress users expect.
+      moreMenu: { editor: true, fullscreen: false, preview: false, topToolbar: true },
+      defaultPreferences: { fixedToolbar: false },
+
       // Popovers rather than docked sidebars. The admin form already owns the
       // right-hand column for post metadata, and two sidebars in one column
       // collide badly.
@@ -64,8 +70,14 @@
     },
     editor: {
       hasUploadPermissions: true,
+      hasFixedToolbar: false,
       mediaUpload: mediaUpload,
       bodyPlaceholder: "Write your post…",
+
+      // Gutenberg disables the hover "+" between blocks when either of these is
+      // on, and they default to undefined rather than false in this bundle.
+      isDistractionFree: false,
+      hasReducedUI: false,
     },
   };
 

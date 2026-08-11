@@ -138,6 +138,126 @@ a { color: var(--accent); }
 .post-body table { width: 100%; border-collapse: collapse; font-family: var(--sans); font-size: 0.9rem; }
 .post-body th, .post-body td { border: 1px solid var(--rule); padding: 0.5rem 0.7rem; text-align: left; }
 
+/* --- WordPress block classes ---------------------------------------------
+   Imported content carries WordPress's own block and alignment classes.
+   WordPress ships these styles as part of its themes, so a post rendered
+   without them loses its layout — centred images drift left, tables lose their
+   stripes, separators vanish. Scoped to .post-body so nothing leaks elsewhere.
+   Only the classes that actually appear in the imported content are covered. */
+
+/* Alignment. display:table shrink-wraps the figure to its image so the auto
+   margins have something to centre, which is how WordPress does it. */
+.post-body .aligncenter,
+.post-body figure.aligncenter {
+  display: table;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.post-body .aligncenter figcaption { display: table-caption; caption-side: bottom; }
+
+.post-body .alignleft {
+  float: left;
+  margin: 0.5rem 1.5rem 1rem 0;
+}
+
+.post-body .alignright {
+  float: right;
+  margin: 0.5rem 0 1rem 1.5rem;
+}
+
+.post-body .alignnone { margin-left: 0; margin-right: 0; }
+
+/* Floats must not escape the article. */
+.post-body::after { content: ""; display: table; clear: both; }
+
+.post-body .alignwide,
+.post-body .alignfull {
+  max-width: min(100vw, 58rem);
+  margin-left: 50%;
+  transform: translateX(-50%);
+}
+
+/* Images */
+.post-body .wp-block-image { margin: 2rem 0; }
+.post-body .wp-block-image img { height: auto; max-width: 100%; }
+.post-body .wp-block-image.is-resized img { width: auto; }
+.post-body .size-full img, .post-body img.size-full { width: 100%; }
+
+/* Preformatted and code — by far the most common blocks in this content. */
+.post-body .wp-block-preformatted,
+.post-body .wp-block-code {
+  background: var(--bg-soft);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  padding: 1rem;
+  overflow-x: auto;
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* Quotes */
+.post-body .wp-block-quote {
+  margin: 2rem 0;
+  padding-left: 1.25rem;
+  border-left: 3px solid var(--rule);
+  color: var(--ink-soft);
+}
+
+.post-body .wp-block-quote cite {
+  display: block;
+  margin-top: 0.5rem;
+  font-family: var(--sans);
+  font-size: 0.82rem;
+  font-style: normal;
+}
+
+/* Separators */
+.post-body .wp-block-separator {
+  border: 0;
+  border-top: 1px solid var(--rule);
+  margin: 2.5rem auto;
+  max-width: 8rem;
+}
+
+.post-body .wp-block-separator.is-style-wide { max-width: 100%; }
+
+/* Spacer height comes from an inline style; this only stops floats bleeding. */
+.post-body .wp-block-spacer { clear: both; }
+
+/* Tables */
+.post-body .wp-block-table { margin: 2rem 0; overflow-x: auto; }
+.post-body .wp-block-table table { width: 100%; border-collapse: collapse; }
+
+.post-body .wp-block-table.is-style-stripes tbody tr:nth-child(odd) {
+  background: var(--bg-soft);
+}
+
+.post-body .wp-block-table.is-style-stripes td,
+.post-body .wp-block-table.is-style-stripes th { border-color: transparent; }
+
+/* Embeds. The 16:9 box is ready for whenever an oEmbed URL becomes an iframe. */
+.post-body .wp-block-embed { margin: 2rem 0; }
+.post-body .wp-block-embed__wrapper { position: relative; }
+
+.post-body .wp-embed-aspect-16-9 .wp-block-embed__wrapper {
+  padding-top: 56.25%;
+}
+
+.post-body .wp-embed-aspect-16-9 .wp-block-embed__wrapper > iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+/* WordPress core palette entries used by this content. */
+.post-body .has-text-color.has-cyan-bluish-gray-color { color: #abb8c3; }
+
 .post-footer { margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--rule); font-size: 0.85rem; }
 
 .comments { margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--rule); }
@@ -275,6 +395,16 @@ textarea.content-editor { min-height: 30rem; }
 }
 
 .field .editor .editor-header__settings { margin-left: auto; }
+
+/* On large viewports the library always docks a block toolbar in the header,
+   even when the contextual (floating) toolbar is active — so selecting a block
+   shows two identical toolbars plus a chevron toggling the redundant one.
+   Hide the header copy, but only while the docked mode is off, so turning on
+   "Top toolbar" from the options menu still works. */
+.field .editor .iso-editor:not(.has-fixed-toolbar) .editor-collapsible-block-toolbar,
+.field .editor .iso-editor:not(.has-fixed-toolbar) .edit-post-header__block-tools-toggle {
+  display: none;
+}
 
 /* Gutenberg treats each list item as its own block, so the editor's default
    block spacing lands between bullets and the list sprawls. Only the list as a
