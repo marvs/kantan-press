@@ -109,8 +109,8 @@ Copy `.env.example`. Every value can live in ENV or in Rails credentials under
 
 | Variable | Purpose |
 |---|---|
-| `KANTAN_SITE_TITLE` | Site name themes render; defaults to "Kantan Press" |
-| `KANTAN_SITE_DESCRIPTION` | Optional tagline under the site name |
+| `KANTAN_SITE_TITLE` | Site name themes render; defaults to "Kantan Press". Admin → Settings overrides it |
+| `KANTAN_SITE_DESCRIPTION` | Optional tagline under the site name. Admin → Settings overrides it |
 | `KANTAN_MEDIA_BASE_URL` | Host written into post content for images |
 | `KANTAN_LEGACY_SITE_URL` | Old site host; read from the export when unset |
 | `KANTAN_STORAGE_BACKEND` | `disk` or `s3`; inferred from the S3 settings |
@@ -157,6 +157,20 @@ The importer is covered against a fixture that mirrors a real export: Gutenberg
 and classic posts side by side, srcset variants, PHP-serialized attachment
 metadata, threaded comments, spam, a page, a draft and a revision.
 
+## Settings
+
+**Admin → Settings** holds the things a site owner changes: site title, tagline,
+and how many posts the home page lists. They are stored in the database and take
+effect immediately — no redeploy.
+
+These **override** the matching `KANTAN_*` environment variables, which is the
+opposite of every other setting in the table below. A form that silently lost to
+a deploy-time variable would be worse than not having the form. Clearing a field
+falls back to ENV, then to the built-in default.
+
+Storage and S3 credentials are deliberately not editable there; they stay in ENV
+or Rails credentials.
+
 ## Themes
 
 The public site is rendered by the active theme. Pick or import one at
@@ -190,6 +204,10 @@ Writing one: [docs/THEMES.md](docs/THEMES.md).
 cover image carrying the post title, which fades out as you scroll; PT Serif for
 the body and PT Sans for everything else, both self-hosted; and no sidebar. Four
 settings — accent colour, cover height, word count, body font.
+
+The index and archives list posts as compact cards — a cropped thumbnail beside
+the text — rather than at full width. Featured images here are usually
+screenshots, and at full width each entry ran to about a screen on its own.
 
 ## The editor
 

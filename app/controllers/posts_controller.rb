@@ -1,18 +1,17 @@
 class PostsController < ApplicationController
   allow_unauthenticated_access
 
-  PER_PAGE = 10
-
   def index
     # WordPress's /?p=123 permalinks land here; resolve them before rendering.
     if params[:p].present? && (post = Post.find_by(wp_post_id: params[:p]))
       return redirect_to post_path(post.slug), status: :moved_permanently
     end
 
+    per_page = KantanPress::Config.posts_per_page
     @page = [ params[:page].to_i, 1 ].max
     @posts = Post.live.type_post.newest_first.includes(:author, :categories, :featured_media_item)
-                 .offset((@page - 1) * PER_PAGE).limit(PER_PAGE)
-    @total_pages = (Post.live.type_post.count / PER_PAGE.to_f).ceil
+                 .offset((@page - 1) * per_page).limit(per_page)
+    @total_pages = (Post.live.type_post.count / per_page.to_f).ceil
 
     render_themed("index", fallback: :index,
                   page: Themes::Drops::PageDrop.new(

@@ -14,14 +14,33 @@ module KantanPress
       setting(:media_base_url) || default_media_base_url
     end
 
+    # --- settings the site owner edits ------------------------------------
+    #
+    # These read the database first and ENV second, the opposite way round to
+    # the credentials below. An admin form that silently lost to a deploy-time
+    # variable would be worse than not having the form at all.
+
     # Shown by themes in the header, the browser title and the feed. Themes
     # cannot hardcode it, so it has to come from configuration.
     def site_title
-      setting(:site_title).presence || "Kantan Press"
+      site_setting(:site_title) || "Kantan Press"
     end
 
     def site_description
-      setting(:site_description)
+      site_setting(:site_description)
+    end
+
+    DEFAULT_POSTS_PER_PAGE = 10
+    POSTS_PER_PAGE_RANGE = (1..50).freeze
+
+    def posts_per_page
+      value = site_setting(:posts_per_page).to_i
+
+      POSTS_PER_PAGE_RANGE.cover?(value) ? value : DEFAULT_POSTS_PER_PAGE
+    end
+
+    def site_setting(name)
+      SiteSetting.get(name).presence || setting(name).presence
     end
 
     # Host the site was exported from, e.g. "https://techandfi.com". The

@@ -26,6 +26,8 @@ Rails.application.routes.draw do
 
     resources :imports, only: [ :index, :new, :create, :show ]
     resources :comments, only: [ :index, :update, :destroy ]
+
+    resource :settings, only: [ :show, :update ]
   end
 
   get "up" => "rails/health#show", as: :rails_health_check

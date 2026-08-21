@@ -407,20 +407,38 @@ h1, h2, h3, h4, h5, h6 {
 
 /* ------------------------------------------------------------ index/archive */
 
-.post-list { display: flex; flex-direction: column; gap: 3rem; padding-top: 2.5rem; }
+.post-list { display: flex; flex-direction: column; gap: 2.25rem; padding-top: 2.5rem; }
 
-.post-summary .entry-title { font-size: 1.75rem; margin: 0 0 0.3rem; }
+/* An entry is a card: a cropped thumbnail beside the text. Featured images here
+   are screenshots rather than photography, and at full width each one ran to
+   about a screen on its own — the list became nine viewports for ten posts.
+   Cropping to a fixed box makes the page scannable and stops a tall image from
+   deciding the row height. */
+.post-summary { display: flex; flex-direction: column; gap: 1rem; }
+
+.post-summary__thumb {
+  display: block;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  border-radius: 3px;
+  background: var(--bg-soft);
+}
+
+.post-summary__thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/* min-width so a long unbroken word cannot force the text column wider than
+   its share and squeeze the thumbnail. */
+.post-summary__text { min-width: 0; }
+
+.post-summary .entry-title { font-size: 1.45rem; margin: 0 0 0.25rem; line-height: 1.25; }
 .post-summary .entry-title a { color: var(--ink-strong); text-decoration: none; }
 .post-summary .entry-title a:hover { color: var(--accent); }
 
-.post-summary__thumb { display: block; margin-bottom: 1rem; }
-.post-summary__thumb img { width: 100%; border-radius: 3px; }
-
 .post-summary__excerpt {
   font-family: var(--body-font);
-  font-size: 1.02rem;
-  line-height: 1.65;
-  margin: 0.9rem 0 0.6rem;
+  font-size: 1rem;
+  line-height: 1.6;
+  margin: 0.6rem 0 0.5rem;
 }
 
 .more-link { font-family: var(--sans); font-size: 0.9rem; }
@@ -607,8 +625,16 @@ h1, h2, h3, h4, h5, h6 {
 
   /* Body copy steps up from 1.063rem to the base 1.1875rem. Small screens get
      the smaller size so a long word still fits; everything else reads at 19px. */
-  .entry-content,
-  .post-summary__excerpt { font-size: inherit; }
+  .entry-content { font-size: inherit; }
+}
+
+@media (min-width: 640px) {
+  /* flex-start, or the thumbnail stretches to the row height and the declared
+     aspect ratio stops meaning anything — rows end up with different-sized
+     crops depending on how long their excerpt happens to be. */
+  .post-summary { flex-direction: row; align-items: flex-start; gap: 1.5rem; }
+  .post-summary__thumb { flex: 0 0 200px; }
+  .post-summary__text { flex: 1; }
 }
 
 @media (min-width: 783px) {

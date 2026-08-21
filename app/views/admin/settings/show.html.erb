@@ -1,0 +1,68 @@
+<% content_for :title, "Settings" %>
+
+<div class="admin-head">
+  <h1>Settings</h1>
+</div>
+
+<div class="row">
+  <div class="main">
+    <div class="card">
+      <div class="card-head">Site</div>
+      <div class="card-body">
+        <%= form_with url: admin_settings_path, method: :patch do |form| %>
+          <div class="field">
+            <%= label_tag "settings_site_title", "Site title" %>
+            <%= text_field_tag "settings[site_title]", @settings["site_title"], id: "settings_site_title" %>
+            <p class="hint">
+              Shown by the theme in the header, the browser tab and the feed.
+              Leave blank for <span class="mono">Kantan Press</span>.
+            </p>
+          </div>
+
+          <div class="field">
+            <%= label_tag "settings_site_description", "Tagline" %>
+            <%= text_field_tag "settings[site_description]", @settings["site_description"],
+                  id: "settings_site_description" %>
+            <p class="hint">Optional. Sits under the title on the home page.</p>
+          </div>
+
+          <div class="field">
+            <%= label_tag "settings_posts_per_page", "Posts per page" %>
+            <%= text_field_tag "settings[posts_per_page]", @settings["posts_per_page"],
+                  id: "settings_posts_per_page", inputmode: "numeric", style: "max-width:8rem" %>
+            <% if @errors["posts_per_page"] %>
+              <p class="hint" style="color:var(--danger)">
+                Posts per page <%= @errors["posts_per_page"] %>.
+              </p>
+            <% else %>
+              <p class="hint">
+                How many posts the home page lists. Between 1 and 50; blank uses
+                <%= KantanPress::Config::DEFAULT_POSTS_PER_PAGE %>.
+              </p>
+            <% end %>
+          </div>
+
+          <%= form.submit "Save settings", class: "btn" %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <div class="side">
+    <div class="card">
+      <div class="card-head">Where these come from</div>
+      <div class="card-body" style="font-size:0.86rem;line-height:1.6">
+        <p style="margin-top:0">
+          These are stored in the database and take effect immediately — no
+          redeploy. They override the matching
+          <span class="mono">KANTAN_*</span> environment variables, so clearing a
+          field falls back to ENV and then to the built-in default.
+        </p>
+        <p style="margin-bottom:0">
+          Storage and S3 credentials are deliberately not editable here; they
+          stay in ENV or Rails credentials.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

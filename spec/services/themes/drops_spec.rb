@@ -131,12 +131,61 @@ RSpec.describe "theme drops" do
 
   describe Themes::Drops::SiteDrop do
     it "exposes the site title, urls and category list" do
-      create(:category, name: "AI", slug: "ai")
+      create(:post, categories: [ create(:category, name: "AI", slug: "ai") ])
 
       output = render("{{ site.title }}|{{ site.url }}|{{ site.feed_url }}|{{ site.categories.first.name }}",
                       "site" => described_class.new)
 
       expect(output).to eq("Kantan Press|/|/feed|AI")
+    end
+
+    # A nav link to an empty archive is a dead end. WordPress hides empty terms
+    # from wp_list_categories by default for the same reason.
+    it "leaves out a category with nothing published in it" do
+      create(:post, categories: [ create(:category, name: "Has Posts", slug: "has-posts") ])
+      create(:category, name: "Empty", slug: "empty")
+
+      output = render("{% for c in site.categories %}[{{ c.name }}]{% endfor %}", "site" => described_class.new)
+
+      expect(output).to eq("[Has Posts]")
+    end
+
+    it "leaves out a category whose only posts are drafts or scheduled" do
+      category = create(:category, name: "Drafts Only", slug: "drafts-only")
+      create(:post, :draft, categories: [ category ])
+      create(:post, :scheduled, categories: [ category ])
+
+      output = render("{% for c in site.categories %}[{{ c.name }}]{% endfor %}", "site" => described_class.new)
+
+      expect(output).to eq("")
+    end
+
+    it "counts a category once however many posts it has" do
+      category = create(:category, name: "AI", slug: "ai")
+      create_list(:post, 3, categories: [ category ])
+
+      output = render("{% for c in site.categories %}[{{ c.name }} {{ c.post_count }}]{% endfor %}",
+                      "site" => described_class.new)
+
+      expect(output).to eq("[AI 3]")
+    end
+
+    it "does not query per category for the count" do
+      3.times { |n| create(:post, categories: [ create(:category, name: "C#{n}", slug: "c#{n}") ]) }
+      drop = described_class.new
+
+      expect(drop.categories.map(&:post_count)).to eq([ 1, 1, 1 ])
+      expect(Category).not_to receive(:find)
+    end
+
+    it "applies the same rule to tags" do
+      create(:post, tags: [ create(:tag, name: "LLM", slug: "llm") ])
+      create(:tag, name: "Unused", slug: "unused")
+
+      output = render("{% for t in site.tags %}[{{ t.name }} {{ t.post_count }}]{% endfor %}",
+                      "site" => described_class.new)
+
+      expect(output).to eq("[LLM 1]")
     end
 
     it "escapes a configured site title" do

@@ -29,19 +29,26 @@
         {% for post in posts %}
           <article class="post-summary">
             {% if post.featured_image %}
-              <a class="post-summary__thumb" href="{{ post.url }}">
-                <img src="{{ post.featured_image.url }}" alt="{{ post.featured_image.alt }}" loading="lazy">
+              {%- comment -%}
+                aria-hidden because the title right next to it links to the same
+                post: a screen reader or a keyboard user should meet one link
+                per entry, not two.
+              {%- endcomment -%}
+              <a class="post-summary__thumb" href="{{ post.url }}" aria-hidden="true" tabindex="-1">
+                <img src="{{ post.featured_image.url }}" alt="" loading="lazy" decoding="async">
               </a>
             {% endif %}
 
-            <h2 class="entry-title"><a href="{{ post.url }}">{{ post.title }}</a></h2>
+            <div class="post-summary__text">
+              <h2 class="entry-title"><a href="{{ post.url }}">{{ post.title }}</a></h2>
 
-            <div class="entry-meta">
-              {%- if post.published_at %}<span>{{ post.published_at | date: "%B %-d, %Y" }}</span>{% endif -%}
+              <div class="entry-meta">
+                {%- if post.published_at %}<span>{{ post.published_at | date: "%B %-d, %Y" }}</span>{% endif -%}
+              </div>
+
+              <p class="post-summary__excerpt">{{ post.excerpt_html }}</p>
+              <a class="more-link" href="{{ post.url }}">Continue reading &rarr;</a>
             </div>
-
-            <p class="post-summary__excerpt">{{ post.excerpt_html }}</p>
-            <a class="more-link" href="{{ post.url }}">Continue reading &rarr;</a>
           </article>
         {% endfor %}
       </div>

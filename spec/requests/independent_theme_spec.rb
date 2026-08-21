@@ -171,7 +171,7 @@ RSpec.describe "the Independent theme" do
       get "/themes/independent/assets/theme.css"
 
       expect(response.body).to match(/@media \(min-width: 518px\)/)
-      expect(response.body).to match(/\.entry-content,\s*\n\s*\.post-summary__excerpt \{ font-size: inherit; \}/)
+      expect(response.body).to include(".entry-content { font-size: inherit; }")
     end
 
     it "widens the reading column on desktop" do

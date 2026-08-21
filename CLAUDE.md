@@ -106,6 +106,14 @@ See `docs/THEMES.md` for the theme-author contract and
   wrong value can never be corrected, so re-running the import silently fails to
   heal the data. Assign explicitly, releasing the id from any other row that
   holds it, so the source file stays the source of truth.
+- **Split configuration by who owns it.** Things a *site owner* edits (title,
+  tagline, page size) live in `site_settings` and override ENV, so the admin
+  form is not silently beaten by a deploy-time variable. Things an *operator*
+  sets (storage backend, S3 credentials) stay in ENV/credentials and are never
+  writable from the admin. `KantanPress::Config#site_setting` is the first kind;
+  `#setting` is the second.
+- **Per-request memoisation belongs on `Current`,** not in a class-level ivar: a
+  process-level cache would not see a change made by another Puma worker.
 - **A `stored` row is not proof the object exists.** The database and the bucket
   drift — an object deleted, or media fetched under the `disk` backend before
   the app was pointed at S3. `retry_media` skips such rows because they are not

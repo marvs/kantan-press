@@ -98,7 +98,7 @@ Every template gets `site`, `settings`, `theme` and `page`.
 |---|---|
 | `site.title`, `site.description` | From `KANTAN_SITE_TITLE` / `KANTAN_SITE_DESCRIPTION` |
 | `site.url`, `site.feed_url` | |
-| `site.categories`, `site.tags` | Arrays of category/tag objects, alphabetical |
+| `site.categories`, `site.tags` | Alphabetical, and **only terms with something published in them** — a nav link to an empty archive is a dead end, and WordPress hides empty terms from `wp_list_categories` for the same reason. Each has `name`, `slug`, `url`, `post_count` |
 | `site.pages` | Published pages, by title |
 
 ### `page`
