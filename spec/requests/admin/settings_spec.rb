@@ -72,7 +72,10 @@ RSpec.describe "Admin::Settings" do
         SiteSetting.reset_cache!
         get root_path
 
-        expect(response.body.scan('<article class="post-summary">').size).to eq(2)
+        # The newest post is the lead card, so two per page is one lead plus one summary.
+        entries = response.body.scan('<article class="post-lead">').size +
+                  response.body.scan('<article class="post-summary">').size
+        expect(entries).to eq(2)
         expect(response.body).to include("Page 1 of 3")
       end
 

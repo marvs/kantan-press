@@ -96,6 +96,60 @@ RSpec.describe "the Independent theme" do
     end
   end
 
+  describe "the home page" do
+    it "gives the newest post a lead treatment and the rest ordinary cards" do
+      create(:post, slug: "newest", title: "The Newest One", published_at: 1.hour.ago,
+             featured_media_item: cover)
+      create(:post, title: "An Older One", published_at: 3.days.ago)
+
+      get root_path
+
+      expect(response.body).to include('<article class="post-lead">')
+      expect(response.body).to match(%r{post-lead__eyebrow">\s*Latest})
+      expect(response.body).to match(%r{<article class="post-lead">[\s\S]*The Newest One}m)
+      expect(response.body.scan('<article class="post-summary">').size).to eq(1)
+      expect(response.body).to include("An Older One")
+    end
+
+    it "does not repeat the lead post further down the list" do
+      create(:post, slug: "newest", title: "The Newest One", published_at: 1.hour.ago)
+      create(:post, title: "An Older One", published_at: 3.days.ago)
+
+      get root_path
+
+      expect(response.body.scan("The Newest One").size).to eq(1)
+    end
+
+    it "drops the lead treatment beyond page one, where nothing is the latest" do
+      create_list(:post, 12)
+
+      get root_path(page: 2)
+
+      expect(response.body).not_to include('<article class="post-lead">')
+      expect(response.body.scan('<article class="post-summary">').size).to eq(2)
+    end
+
+    it "shows the tagline and a count beside every category" do
+      allow(KantanPress::Config).to receive(:site_description).and_return("Notes on code")
+      category = create(:category, name: "AI", slug: "ai")
+      create_list(:post, 3, categories: [ category ])
+
+      get root_path
+
+      expect(response.body).to include("Notes on code")
+      expect(response.body).to match(%r{AI <span class="site-nav__count">3</span>})
+    end
+
+    it "leads with a titled card when the newest post has no featured image" do
+      create(:post, slug: "newest", title: "The Newest One")
+
+      get root_path
+
+      expect(response.body).to include('<article class="post-lead">', "The Newest One")
+      expect(response.body).not_to include("post-lead__thumb")
+    end
+  end
+
   describe "the rest of the site" do
     it "renders the index, a page and an archive" do
       create_post(title: "Kantan Dev")

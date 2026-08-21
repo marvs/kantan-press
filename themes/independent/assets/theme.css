@@ -288,34 +288,107 @@ h1, h2, h3, h4, h5, h6 {
 
 /* ------------------------------------------------------- header and byline */
 
-/* Shown on the index, archives, and any post with no featured image. */
+/* The masthead. Typographic rather than a hero image: the name set large and
+   left, the tagline under it, and the categories with how much is in each.
+   max-width is in ch so a long site name wraps to a second line and a short one
+   stays on one — the theme cannot know where a given name wants to break. */
 .site-header {
   border-bottom: 1px solid var(--rule);
-  padding: 2.5rem 0 1.5rem;
-  text-align: center;
+  padding: 3.25rem 0 1.25rem;
 }
 
 .site-title {
   margin: 0;
-  font-size: 2.5rem;
-  line-height: 1.2;
+  max-width: 16ch;
+  font-size: clamp(2.6rem, 6vw, 3.6rem);
+  font-weight: 700;
+  line-height: 1.02;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
 }
 
 .site-title a { color: var(--ink-strong); text-decoration: none; }
 .site-title a:hover { color: var(--accent); }
-.site-description { margin: 0.4rem 0 0; color: var(--ink-soft); font-size: 1rem; }
+
+.site-description {
+  margin: 0.7rem 0 0;
+  max-width: 42ch;
+  color: var(--ink-soft);
+  font-size: 1rem;
+}
 
 .site-nav {
   display: flex;
   flex-wrap: wrap;
-  gap: 1rem;
-  justify-content: center;
-  margin-top: 1rem;
+  gap: 0.35rem 1.15rem;
+  margin-top: 1.6rem;
   font-size: 0.85rem;
 }
 
 .site-nav a { color: var(--ink-soft); text-decoration: none; }
 .site-nav a:hover { color: var(--accent); }
+
+/* Tabular so the numbers do not jitter the words around them. */
+.site-nav__count {
+  color: var(--rule);
+  font-size: 0.76rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.site-nav a:hover .site-nav__count { color: var(--accent); }
+
+/* Posts and pages keep a quiet one-line version, so the masthead does not
+   compete with the article's own title. */
+.site-header--compact { padding: 2rem 0 1.1rem; }
+.site-header--compact .site-title { font-size: 1.5rem; letter-spacing: -0.015em; max-width: none; }
+
+/* ------------------------------------------------------------- lead post */
+
+.post-lead {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  padding: 2.5rem 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+.post-lead__thumb {
+  display: block;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  border-radius: 3px;
+  background: var(--bg-soft);
+}
+
+.post-lead__thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.post-lead__text { min-width: 0; }
+
+.post-lead__eyebrow {
+  margin: 0 0 0.5rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.post-lead .entry-title {
+  margin: 0 0 0.35rem;
+  font-size: clamp(1.75rem, 3.4vw, 2.35rem);
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+.post-lead .entry-title a { color: var(--ink-strong); text-decoration: none; }
+.post-lead .entry-title a:hover { color: var(--accent); }
+
+.post-lead__excerpt {
+  font-family: var(--body-font);
+  font-size: 1.08rem;
+  line-height: 1.6;
+  margin: 0.8rem 0 0.6rem;
+}
 
 .entry-meta {
   font-size: 0.875rem;
@@ -408,6 +481,7 @@ h1, h2, h3, h4, h5, h6 {
 /* ------------------------------------------------------------ index/archive */
 
 .post-list { display: flex; flex-direction: column; gap: 2.25rem; padding-top: 2.5rem; }
+.post-lead + .post-list { padding-top: 2.25rem; }
 
 /* An entry is a card: a cropped thumbnail beside the text. Featured images here
    are screenshots rather than photography, and at full width each one ran to
@@ -629,6 +703,10 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 @media (min-width: 640px) {
+  .post-lead { flex-direction: row; align-items: flex-start; gap: 2rem; }
+  .post-lead__thumb { flex: 0 0 44%; }
+  .post-lead__text { flex: 1; }
+
   /* flex-start, or the thumbnail stretches to the row height and the declared
      aspect ratio stops meaning anything — rows end up with different-sized
      crops depending on how long their excerpt happens to be. */
