@@ -358,7 +358,14 @@ h1, h2, h3, h4, h5, h6 {
   overflow: hidden;
   border-radius: 3px;
   background: var(--bg-soft);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
+  transition: box-shadow 160ms ease;
 }
+
+.post-lead:hover .post-lead__thumb,
+.post-lead:focus-within .post-lead__thumb { box-shadow: inset 0 0 0 1px var(--accent); }
+.post-lead:hover .entry-title a,
+.post-lead:focus-within .entry-title a { color: var(--accent); }
 
 .post-lead__thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .post-lead__text { min-width: 0; }
@@ -490,15 +497,85 @@ h1, h2, h3, h4, h5, h6 {
    deciding the row height. */
 .post-summary { display: flex; flex-direction: column; gap: 1rem; }
 
-.post-summary__thumb {
-  display: block;
+/* Every entry carries the same plate, whether or not it has a cover.
+   The date is stamped on it either way: over a darkened photograph when there
+   is one, on tint when there is not. That is what stops an image-less post
+   reading as a hole — and without it the text edge jumps 224px between rows. */
+.post-summary__plate {
+  position: relative;
+  /* The plate is a link and now contains text, so it would otherwise pick up
+     the browser's underline in the link colour. */
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   aspect-ratio: 16 / 10;
   overflow: hidden;
   border-radius: 3px;
   background: var(--bg-soft);
+  /* A hairline so a pale cover still has an edge against the page. */
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
+  transition: box-shadow 160ms ease;
 }
 
-.post-summary__thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.post-summary__plate img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* Darkened so the stamp stays legible over any cover the author picks — the
+     images here run from flat illustration to near-black screenshots. */
+  filter: brightness(0.44) saturate(0.75);
+  transition: filter 260ms ease;
+}
+
+.dateline {
+  position: relative; /* above the image */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+  line-height: 1;
+  text-align: center;
+}
+
+.dateline__month {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.dateline__year {
+  font-family: var(--serif);
+  font-size: 1.75rem;
+  letter-spacing: -0.01em;
+  color: var(--ink-strong);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Over a photograph the stamp inverts. The shadow is belt and braces: the
+   darkening handles most covers, the shadow handles a blown-out sky. */
+.post-summary__plate--photo .dateline__month { color: rgba(255, 255, 255, 0.75); }
+.post-summary__plate--photo .dateline__year { color: #fff; }
+.post-summary__plate--photo .dateline { text-shadow: 0 1px 3px rgba(0, 0, 0, 0.65); }
+
+/* The row is one thing, so it answers as one thing: the cover lifts far enough
+   to be read, but not so far that white type stops being legible on it. */
+.post-summary:hover .post-summary__plate,
+.post-summary:focus-within .post-summary__plate {
+  box-shadow: inset 0 0 0 1px var(--accent);
+}
+
+.post-summary:hover .post-summary__plate img,
+.post-summary:focus-within .post-summary__plate img {
+  filter: brightness(0.62) saturate(0.95);
+}
+
+.post-summary:hover .entry-title a,
+.post-summary:focus-within .entry-title a { color: var(--accent); }
 
 /* min-width so a long unbroken word cannot force the text column wider than
    its share and squeeze the thumbnail. */
@@ -702,6 +779,14 @@ h1, h2, h3, h4, h5, h6 {
   .entry-content { font-size: inherit; }
 }
 
+/* The plate earns its place by keeping the left column aligned. Below the
+   side-by-side breakpoint there is no column to align, so a full-width box
+   holding two words is just a hole — and the date is in the meta line anyway.
+   A plate with a cover still shows: that is the post's own content. */
+@media (max-width: 639px) {
+  .post-summary__plate:not(.post-summary__plate--photo) { display: none; }
+}
+
 @media (min-width: 640px) {
   .post-lead { flex-direction: row; align-items: flex-start; gap: 2rem; }
   .post-lead__thumb { flex: 0 0 44%; }
@@ -711,7 +796,7 @@ h1, h2, h3, h4, h5, h6 {
      aspect ratio stops meaning anything — rows end up with different-sized
      crops depending on how long their excerpt happens to be. */
   .post-summary { flex-direction: row; align-items: flex-start; gap: 1.5rem; }
-  .post-summary__thumb { flex: 0 0 200px; }
+  .post-summary__plate { flex: 0 0 200px; }
   .post-summary__text { flex: 1; }
 }
 

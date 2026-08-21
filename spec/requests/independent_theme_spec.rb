@@ -140,6 +140,33 @@ RSpec.describe "the Independent theme" do
       expect(response.body).to match(%r{AI <span class="site-nav__count">3</span>})
     end
 
+    it "stamps the date on every plate, cover or no cover" do
+      create(:post, slug: "newest", title: "Newest", published_at: 1.hour.ago)
+      create(:post, title: "Has A Cover", published_at: Time.utc(2026, 5, 27), featured_media_item: cover)
+      create(:post, title: "No Cover At All", published_at: Time.utc(2022, 2, 17))
+
+      get root_path
+
+      # Two summary rows, each with a plate, each stamped.
+      expect(response.body.scan('class="post-summary__plate').size).to eq(2)
+      expect(response.body.scan('<span class="dateline__month">').size).to eq(2)
+      expect(response.body).to include('<span class="dateline__month">May</span>')
+      expect(response.body).to include('<span class="dateline__year">2026</span>')
+      expect(response.body).to include('<span class="dateline__month">Feb</span>')
+      expect(response.body).to include('<span class="dateline__year">2022</span>')
+    end
+
+    it "marks the plate as a photo one only when there is a cover" do
+      create(:post, slug: "newest", published_at: 1.hour.ago)
+      create(:post, title: "Covered", published_at: 2.days.ago, featured_media_item: cover)
+      create(:post, title: "Bare", published_at: 3.days.ago)
+
+      get root_path
+
+      expect(response.body.scan("post-summary__plate--photo").size).to eq(1)
+      expect(response.body).to match(%r{post-summary__plate--photo[\s\S]{0,220}<img})
+    end
+
     it "leads with a titled card when the newest post has no featured image" do
       create(:post, slug: "newest", title: "The Newest One")
 
@@ -196,6 +223,33 @@ RSpec.describe "the Independent theme" do
       expect(response).to have_http_status(:ok)
       expect(response.media_type).to eq("image/svg+xml")
       expect(response.body).to include("<svg")
+    end
+
+    it "drops a coverless plate on narrow screens, where it aligns nothing" do
+      get "/themes/independent/assets/theme.css"
+
+      expect(response.body).to match(/@media \(max-width: 639px\)[\s\S]{0,120}\.post-summary__plate:not\(\.post-summary__plate--photo\) \{ display: none; \}/)
+    end
+
+    it "darkens a cover so the stamp stays legible, and lifts it on hover" do
+      get "/themes/independent/assets/theme.css"
+
+      expect(response.body).to include("filter: brightness(0.44) saturate(0.75);")
+      expect(response.body).to include("filter: brightness(0.62) saturate(0.95);")
+      expect(response.body).to include("box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);")
+    end
+
+    it "does not underline the stamp, which is inside a link" do
+      get "/themes/independent/assets/theme.css"
+
+      expect(response.body).to match(/\.post-summary__plate \{[^}]*text-decoration: none;/m)
+    end
+
+    it "inverts the stamp over a photograph" do
+      get "/themes/independent/assets/theme.css"
+
+      expect(response.body).to include(".post-summary__plate--photo .dateline__year { color: #fff; }")
+      expect(response.body).to include("text-shadow: 0 1px 3px rgba(0, 0, 0, 0.65);")
     end
 
     it "carries the WordPress block styles, or imported posts lose their layout" do

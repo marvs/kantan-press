@@ -30,16 +30,27 @@
       <div class="post-list">
         {% for post in posts %}
           <article class="post-summary">
-            {% if post.featured_image %}
-              {%- comment -%}
-                aria-hidden because the title right next to it links to the same
-                post: a screen reader or a keyboard user should meet one link
-                per entry, not two.
-              {%- endcomment -%}
-              <a class="post-summary__thumb" href="{{ post.url }}" aria-hidden="true" tabindex="-1">
+            {%- comment -%}
+              One plate for every entry. When the post has a cover the image sits
+              behind a darkened field with the date stamped over it; when it has
+              none the same plate carries the date on tint. That is what keeps an
+              image-less post from reading as a hole in the column.
+
+              aria-hidden because the title beside it links to the same post: a
+              screen reader or a keyboard user should meet one link per entry.
+            {%- endcomment -%}
+            <a class="post-summary__plate{% if post.featured_image %} post-summary__plate--photo{% endif %}"
+               href="{{ post.url }}" aria-hidden="true" tabindex="-1">
+              {% if post.featured_image %}
                 <img src="{{ post.featured_image.url }}" alt="" loading="lazy" decoding="async">
-              </a>
-            {% endif %}
+              {% endif %}
+              {% if post.published_at %}
+                <span class="dateline">
+                  <span class="dateline__month">{{ post.published_at | date: "%b" }}</span>
+                  <span class="dateline__year">{{ post.published_at | date: "%Y" }}</span>
+                </span>
+              {% endif %}
+            </a>
 
             <div class="post-summary__text">
               <h2 class="entry-title"><a href="{{ post.url }}">{{ post.title }}</a></h2>
