@@ -241,6 +241,56 @@ RSpec.describe Wordpress::Importer do
     end
   end
 
+  # An attachment id that ended up on the wrong file — an interrupted run, or a
+  # fixture imported into the same database — silently breaks every post whose
+  # _thumbnail_id points at it. Re-running the export has to be able to heal
+  # that, or the only fix is editing rows by hand.
+  describe "re-running over a database with a wrong attachment id" do
+    let(:cover_key) { "wp-content/uploads/2026/05/qwen3_web_search_result.png" }
+
+    it "corrects an id the file should not have" do
+      import
+      cover = MediaItem.find_by(key: cover_key)
+      cover.update!(wp_attachment_id: 4242)
+
+      import
+
+      expect(cover.reload.wp_attachment_id).to eq(901)
+    end
+
+    it "takes the id back from whichever file wrongly holds it" do
+      import
+      cover = MediaItem.find_by(key: cover_key)
+      impostor = MediaItem.where.not(id: cover.id).first
+      cover.update!(wp_attachment_id: nil)
+      impostor.update!(wp_attachment_id: 901)
+
+      import
+
+      expect(cover.reload.wp_attachment_id).to eq(901)
+      expect(impostor.reload.wp_attachment_id).to be_nil
+    end
+
+    it "puts back a featured image the wrong id had broken" do
+      import
+      MediaItem.find_by(key: cover_key).update!(wp_attachment_id: 4242)
+      Post.find_by(slug: "local-llm-tool-calls").update!(featured_media_item: nil)
+
+      import
+
+      expect(Post.find_by(slug: "local-llm-tool-calls").featured_media_item&.key).to eq(cover_key)
+    end
+
+    it "leaves a correct id alone" do
+      import
+      before_ids = MediaItem.order(:id).pluck(:id, :wp_attachment_id)
+
+      import
+
+      expect(MediaItem.order(:id).pluck(:id, :wp_attachment_id)).to eq(before_ids)
+    end
+  end
+
   describe "the returned summary" do
     it "reports per-kind tallies" do
       result = import

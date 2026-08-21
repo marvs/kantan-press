@@ -705,6 +705,53 @@ button.linkish { background: none; border: none; color: #c6cbd4; padding: 0; fon
 .mono { font-family: var(--mono); font-size: 0.82rem; }
 .log { background: var(--bg-soft); border: 1px solid var(--rule); border-radius: 4px; padding: 0.8rem; font-family: var(--mono); font-size: 0.78rem; white-space: pre-wrap; max-height: 20rem; overflow-y: auto; }
 
+/* ---------------------------------------------------------------- themes */
+
+.theme-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+  gap: 1rem;
+}
+
+/* The grid already spaces the cards; the generic .card + .card rule would add
+   a second gap on top of it. */
+.theme-grid .card + .card { margin-top: 0; }
+
+.theme-card { display: flex; flex-direction: column; overflow: hidden; }
+.theme-card.is-active { border-color: var(--ok); box-shadow: 0 0 0 1px var(--ok); }
+
+.theme-card__shot {
+  aspect-ratio: 4 / 3;
+  background: var(--bg-soft);
+  border-bottom: 1px solid var(--rule);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.78rem;
+}
+
+.theme-card__shot img { width: 100%; height: 100%; object-fit: cover; }
+
+.theme-card .card-body { display: flex; flex-direction: column; gap: 0.4rem; flex: 1; }
+.theme-card__head { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; }
+.theme-card__meta { font-size: 0.78rem; margin: 0; }
+.theme-card__desc { font-size: 0.83rem; margin: 0; }
+
+.theme-card__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: auto;
+  padding-top: 0.5rem;
+}
+
+/* button_to wraps each button in its own form, which would otherwise stack
+   them instead of letting them sit in the row. */
+.theme-card__actions form { display: inline; }
+
+.setting-color { display: flex; align-items: center; gap: 0.6rem; }
+.setting-color input[type=color] { width: 3rem; height: 2rem; padding: 0; border: 1px solid #c8ccd3; border-radius: 4px; background: #fff; }
+
 /* --------------------------------------------------------------- sign in */
 
 .auth { max-width: 22rem; margin: 6rem auto; }

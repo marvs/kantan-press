@@ -1,0 +1,35 @@
+{%- comment -%}
+  A page. Same cover treatment as a post, but no byline, categories, tags or
+  comments — a page is not part of the chronology.
+{%- endcomment -%}
+
+{% if post.featured_image %}
+  <div class="post-cover">
+    <img class="post-cover__image" src="{{ post.featured_image.url }}" alt="{{ post.featured_image.alt }}"
+         fetchpriority="high" decoding="async">
+    <div class="post-cover__scrim"></div>
+    <a class="post-cover__home" href="{{ site.url }}" aria-label="{{ site.title }}">&#8962;</a>
+
+    <div class="cover-meta">
+      <h1 class="entry-title">{{ post.title }}</h1>
+    </div>
+  </div>
+{% else %}
+  <header class="site-header">
+    <div class="wrap">
+      <p class="site-title"><a href="{{ site.url }}">{{ site.title }}</a></p>
+    </div>
+  </header>
+{% endif %}
+
+<main class="site-main">
+  <article class="wrap">
+    {% unless post.featured_image %}
+      <header class="entry-header">
+        <h1 class="entry-title">{{ post.title }}</h1>
+      </header>
+    {% endunless %}
+
+    <div class="entry-content">{{ post.body_html }}</div>
+  </article>
+</main>

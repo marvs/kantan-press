@@ -10,14 +10,28 @@ class PostsController < ApplicationController
     end
 
     @page = [ params[:page].to_i, 1 ].max
-    @posts = Post.live.type_post.newest_first.includes(:categories, :featured_media_item)
+    @posts = Post.live.type_post.newest_first.includes(:author, :categories, :featured_media_item)
                  .offset((@page - 1) * PER_PAGE).limit(PER_PAGE)
     @total_pages = (Post.live.type_post.count / PER_PAGE.to_f).ceil
+
+    render_themed("index", fallback: :index,
+                  page: Themes::Drops::PageDrop.new(
+                    title: KantanPress::Config.site_title,
+                    description: KantanPress::Config.site_description,
+                    canonical_url: @page > 1 ? root_url(page: @page) : root_url
+                  ),
+                  posts: post_drops(@posts),
+                  pagination: pagination_drop(@page, @total_pages) { |page| root_path(page: page) })
   end
 
   def show
-    @post = Post.live.includes(:categories, :tags).find_by(slug: params[:slug])
-    return render :show if @post
+    @post = Post.live.includes(:author, :categories, :tags).find_by(slug: params[:slug])
+
+    if @post
+      return render_themed(@post.type_page? ? "page" : "post", fallback: :show,
+                           page: post_page_drop(@post),
+                           post: Themes::Drops::PostDrop.new(@post))
+    end
 
     # An old permalink structure (date-based URLs, renamed slugs) resolves here.
     if (redirect = Redirect.lookup("/#{params[:slug]}"))
@@ -34,4 +48,17 @@ class PostsController < ApplicationController
       format.atom
     end
   end
+
+  private
+    # The head metadata the ERB view used to set with content_for, moved here so
+    # it does not depend on a theme author remembering the og: tags.
+    def post_page_drop(post)
+      Themes::Drops::PageDrop.new(
+        title: post.title,
+        description: helpers.excerpt_plain_text(post, length: 160),
+        canonical_url: post_url(post.slug),
+        image_url: (post.featured_media_item.url if post.featured_media_item&.stored?),
+        kind: "article"
+      )
+    end
 end

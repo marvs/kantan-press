@@ -1,0 +1,48 @@
+{
+  "name": "Independent",
+  "slug": "independent",
+  "version": "1.0.0",
+  "author": "Kantan Press",
+  "description": "A reader-focused theme with a full-width cover image, a large serif reading column, and no sidebar.",
+  "license": "GPL-2.0-or-later",
+  "kantan_theme_api": 1,
+  "settings": [
+    {
+      "key": "accent_color",
+      "type": "color",
+      "label": "Accent colour",
+      "default": "#57ad68",
+      "description": "Links, hover states and the quote rule."
+    },
+    {
+      "key": "cover_height",
+      "type": "select",
+      "label": "Cover image height",
+      "default": "medium",
+      "description": "How much of the screen a post's featured image fills before the text starts.",
+      "options": [
+        { "value": "short", "label": "Short" },
+        { "value": "medium", "label": "Medium" },
+        { "value": "tall", "label": "Tall" }
+      ]
+    },
+    {
+      "key": "show_word_count",
+      "type": "boolean",
+      "label": "Show word count",
+      "default": true,
+      "description": "Adds a word count to the byline over the cover image."
+    },
+    {
+      "key": "body_font",
+      "type": "select",
+      "label": "Body font",
+      "default": "serif",
+      "description": "The face used for post text. Headings and the interface always use PT Sans.",
+      "options": [
+        { "value": "serif", "label": "Serif — PT Serif" },
+        { "value": "sans", "label": "Sans — PT Sans" }
+      ]
+    }
+  ]
+}

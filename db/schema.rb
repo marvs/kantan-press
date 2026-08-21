@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_08_064400) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_21_120000) do
   create_table "categories", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.text "description"
@@ -145,6 +145,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_08_064400) do
     t.integer "wp_term_id"
     t.index ["slug"], name: "index_tags_on_slug", unique: true
     t.index ["wp_term_id"], name: "index_tags_on_wp_term_id", unique: true, where: "wp_term_id IS NOT NULL"
+  end
+
+  create_table "themes", force: :cascade do |t|
+    t.boolean "active", default: false, null: false
+    t.datetime "created_at", null: false
+    t.json "settings", default: {}, null: false
+    t.string "slug", null: false
+    t.datetime "updated_at", null: false
+    t.index ["active"], name: "index_themes_on_active", unique: true, where: "active"
+    t.index ["slug"], name: "index_themes_on_slug", unique: true
   end
 
   create_table "users", force: :cascade do |t|

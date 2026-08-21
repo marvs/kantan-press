@@ -20,11 +20,26 @@ Rails.application.routes.draw do
       end
     end
 
+    resources :themes, only: [ :index, :create, :edit, :update, :destroy ], param: :slug do
+      member { post :activate }
+    end
+
     resources :imports, only: [ :index, :new, :create, :show ]
     resources :comments, only: [ :index, :update, :destroy ]
   end
 
   get "up" => "rails/health#show", as: :rails_health_check
+
+  # Theme assets. Declared before the public section because the catch-all
+  # further down would otherwise swallow it. format: false keeps ".css" as part
+  # of the path rather than letting Rails read it as a response format.
+  get "themes/:slug/assets/*path", to: "theme_assets#show", as: :theme_asset,
+      constraints: { slug: /[a-z0-9][a-z0-9\-]*/ }, format: false
+
+  # Themes put screenshot.png at their root, as WordPress themes do, so it is
+  # not reachable through the assets route above.
+  get "themes/:slug/screenshot", to: "theme_assets#screenshot", as: :theme_screenshot,
+      constraints: { slug: /[a-z0-9][a-z0-9\-]*/ }, format: false
 
   # --- public site ----------------------------------------------------------
   root "posts#index"

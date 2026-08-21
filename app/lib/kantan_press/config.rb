@@ -14,6 +14,16 @@ module KantanPress
       setting(:media_base_url) || default_media_base_url
     end
 
+    # Shown by themes in the header, the browser title and the feed. Themes
+    # cannot hardcode it, so it has to come from configuration.
+    def site_title
+      setting(:site_title).presence || "Kantan Press"
+    end
+
+    def site_description
+      setting(:site_description)
+    end
+
     # Host the site was exported from, e.g. "https://techandfi.com". The
     # importer rewrites this to media_base_url in every <img src> and srcset.
     def legacy_site_url

@@ -1,0 +1,28 @@
+<%# One settings field, dispatched on the type the theme declared in theme.json.
+    Values are validated by Theme against the same schema, so this only decides
+    what the control looks like. %>
+<div class="field">
+  <% case setting.type %>
+  <% when "boolean" %>
+    <label style="font-weight:400">
+      <%= hidden_field_tag "settings[#{setting.key}]", "0", id: nil %>
+      <%= check_box_tag "settings[#{setting.key}]", "1", value, id: "setting_#{setting.key}" %>
+      <%= setting.label %>
+    </label>
+  <% when "select" %>
+    <%= label_tag "setting_#{setting.key}", setting.label %>
+    <%= select_tag "settings[#{setting.key}]",
+          options_for_select(setting.options.map { |option| [ option.label, option.value ] }, value),
+          id: "setting_#{setting.key}" %>
+  <% when "color" %>
+    <%= label_tag "setting_#{setting.key}", setting.label %>
+    <div class="setting-color">
+      <%= color_field_tag "settings[#{setting.key}]", value, id: "setting_#{setting.key}" %>
+      <span class="mono"><%= value %></span>
+    </div>
+  <% end %>
+
+  <% if setting.description.present? %>
+    <p class="hint"><%= setting.description %></p>
+  <% end %>
+</div>

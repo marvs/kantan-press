@@ -165,7 +165,7 @@ module Wordpress
 
         item.filename = File.basename(key)
         item.source_url ||= url
-        item.wp_attachment_id ||= wp_attachment_id
+        item.wp_attachment_id = claim_attachment_id(wp_attachment_id, item) if wp_attachment_id.present?
         item.title = title.presence if item.title.blank?
         item.alt_text = alt_text.presence if item.alt_text.blank?
         item.width ||= width
@@ -180,6 +180,20 @@ module Wordpress
         end
 
         item
+      end
+
+      # The export says which file an attachment id belongs to, so it wins over
+      # whatever is already in the database. Any other row holding this id got
+      # it from an interrupted run or a different export; leaving the two
+      # swapped would break every post whose _thumbnail_id points here, and
+      # re-running the import could never heal it — which is exactly what the
+      # old `||=` did.
+      def claim_attachment_id(wp_attachment_id, item)
+        MediaItem.where(wp_attachment_id: wp_attachment_id)
+                 .where.not(id: item.id)
+                 .update_all(wp_attachment_id: nil, updated_at: Time.current)
+
+        wp_attachment_id
       end
 
       # _wp_attachment_metadata is a PHP-serialized hash. Only the top-level

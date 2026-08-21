@@ -1,0 +1,634 @@
+@font-face {
+  font-family: 'PT Sans';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url(fonts/pt-sans-400-italic-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'PT Sans';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url(fonts/pt-sans-400-italic-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'PT Sans';
+  font-style: italic;
+  font-weight: 700;
+  font-display: swap;
+  src: url(fonts/pt-sans-700-italic-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'PT Sans';
+  font-style: italic;
+  font-weight: 700;
+  font-display: swap;
+  src: url(fonts/pt-sans-700-italic-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'PT Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(fonts/pt-sans-400-normal-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'PT Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(fonts/pt-sans-400-normal-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'PT Sans';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url(fonts/pt-sans-700-normal-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'PT Sans';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url(fonts/pt-sans-700-normal-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'PT Serif';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url(fonts/pt-serif-400-italic-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'PT Serif';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url(fonts/pt-serif-400-italic-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'PT Serif';
+  font-style: italic;
+  font-weight: 700;
+  font-display: swap;
+  src: url(fonts/pt-serif-700-italic-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'PT Serif';
+  font-style: italic;
+  font-weight: 700;
+  font-display: swap;
+  src: url(fonts/pt-serif-700-italic-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'PT Serif';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(fonts/pt-serif-400-normal-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'PT Serif';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(fonts/pt-serif-400-normal-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'PT Serif';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url(fonts/pt-serif-700-normal-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'PT Serif';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url(fonts/pt-serif-700-normal-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* Independent — the theme Kantan Press ships with.
+ *
+ * A reader-focused layout after Raam Dev's Independent Publisher: a full-bleed
+ * cover image carrying the title, PT Serif for the body, PT Sans for
+ * everything else.
+ *
+ * Values marked "settings" are written into :root by layout.liquid from the
+ * theme's settings, so they are the only things the admin can change.
+ */
+
+/* ------------------------------------------------------------------ tokens */
+
+:root {
+  --ink: #383838;
+  --ink-strong: #333332;
+  --ink-soft: #6d6d6d;
+  --rule: #e0e0e0;
+  --bg: #ffffff;
+  --bg-soft: #f6f6f6;
+
+  --sans: "PT Sans", Helvetica, Arial, sans-serif;
+  --serif: "PT Serif", Georgia, "Times New Roman", serif;
+  --mono: Monaco, Consolas, "Andale Mono", "DejaVu Sans Mono", monospace;
+
+  /* Overridden by layout.liquid: --accent, --body-font,
+     --cover-pad, --cover-pad-md, --cover-pad-lg */
+  --accent: #57ad68;
+  --body-font: var(--serif);
+  --cover-pad: 25vh;
+  --cover-pad-md: 35vh;
+  --cover-pad-lg: 48vh;
+
+  /* The reading column, as a content width: .wrap and .cover-meta are
+     content-box, so the horizontal padding sits outside it. Steps up on
+     desktop, matching the reference's #content-wrapper. */
+  --measure: 700px;
+}
+
+/* -------------------------------------------------------------------- base */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 1.1875rem;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a { color: var(--accent); }
+a:hover { color: var(--accent); }
+
+img, video, iframe { max-width: 100%; }
+img { height: auto; }
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--sans);
+  color: var(--ink-strong);
+  line-height: 1.2;
+}
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  margin: -1px; padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.wrap,
+.cover-meta {
+  box-sizing: content-box;
+  max-width: var(--measure);
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* ------------------------------------------------------------------- cover */
+
+/* The cover is a real <img> rather than a background image: the preload
+   scanner can then find it, and there is no URL interpolated into CSS. */
+
+.post-cover {
+  position: relative;
+  overflow: hidden;
+  padding: var(--cover-pad) 0 30px;
+  isolation: isolate;
+}
+
+.post-cover__image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -2;
+}
+
+/* Dark towards the bottom so the title stays readable over a light photo. */
+.post-cover__scrim {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(rgba(0, 0, 0, 0.1) 50%, rgba(0, 0, 0, 0.65));
+  box-shadow: 0 -1px 8px rgba(0, 0, 0, 0.2) inset;
+}
+
+.post-cover__home {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  width: 42px;
+  height: 42px;
+  border-radius: 42px;
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--ink-strong);
+  font-size: 1.25rem;
+  line-height: 42px;
+  text-align: center;
+  text-decoration: none;
+  transition: box-shadow 180ms ease;
+}
+
+.post-cover__home:hover,
+.post-cover__home:focus { box-shadow: 0 0 0 7px rgba(255, 255, 255, 0.17); }
+
+.cover-meta {
+  /* theme.js drives this on scroll; without JS it simply stays at 1. */
+  will-change: opacity;
+}
+
+.cover-meta .entry-title {
+  margin: 0;
+  color: #fff;
+  font-size: 2.625rem;
+  line-height: 1.1;
+  letter-spacing: -0.5px;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+}
+
+.cover-meta .entry-meta,
+.cover-meta .entry-meta a {
+  color: rgba(255, 255, 255, 0.73);
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.8);
+}
+
+.cover-meta .entry-meta a:hover { color: rgba(255, 255, 255, 0.95); }
+
+/* ------------------------------------------------------- header and byline */
+
+/* Shown on the index, archives, and any post with no featured image. */
+.site-header {
+  border-bottom: 1px solid var(--rule);
+  padding: 2.5rem 0 1.5rem;
+  text-align: center;
+}
+
+.site-title {
+  margin: 0;
+  font-size: 2.5rem;
+  line-height: 1.2;
+}
+
+.site-title a { color: var(--ink-strong); text-decoration: none; }
+.site-title a:hover { color: var(--accent); }
+.site-description { margin: 0.4rem 0 0; color: var(--ink-soft); font-size: 1rem; }
+
+.site-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 1rem;
+  font-size: 0.85rem;
+}
+
+.site-nav a { color: var(--ink-soft); text-decoration: none; }
+.site-nav a:hover { color: var(--accent); }
+
+.entry-meta {
+  font-size: 0.875rem;
+  line-height: 1.65;
+  color: var(--ink-soft);
+}
+
+.entry-meta a { color: var(--ink-soft); }
+.entry-meta > * + *::before { content: " · "; opacity: 0.6; }
+
+.page-header { padding-top: 2.5rem; }
+.page-title { font-size: 2rem; margin: 0 0 0.3rem; }
+.page-description { color: var(--ink-soft); font-size: 0.95rem; margin: 0; }
+
+/* ----------------------------------------------------------------- content */
+
+.site-main { padding-bottom: 4rem; }
+.post-cover + .site-main { padding-top: 2.375rem; }
+
+.entry-header { padding-top: 2.5rem; }
+.entry-header .entry-title { font-size: 2.2em; letter-spacing: -1px; margin: 0 0 0.38em; }
+.entry-header .entry-title a { color: inherit; text-decoration: none; }
+.entry-header .entry-title a:hover { color: var(--accent); }
+
+.entry-content {
+  font-family: var(--body-font);
+  /* Bumped to the body size at 518px — see the media queries at the end. */
+  font-size: 1.063rem;
+  line-height: 1.7;
+  margin-top: 1.5rem;
+  word-wrap: break-word;
+}
+
+.entry-content > :first-child { margin-top: 0; }
+.entry-content > :last-child { margin-bottom: 0; }
+
+.entry-content h1, .entry-content h2, .entry-content h3,
+.entry-content h4, .entry-content h5, .entry-content h6 {
+  font-family: var(--sans);
+  margin: 2rem 0 0.6rem;
+}
+
+.entry-content a { text-decoration: underline; text-underline-offset: 2px; }
+
+.entry-content pre,
+.entry-content code { font-family: var(--mono); }
+.entry-content code { font-size: 0.9em; }
+
+.entry-content pre {
+  background: var(--bg-soft);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  padding: 1rem;
+  overflow-x: auto;
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.entry-content pre code { font-size: inherit; }
+
+.entry-content blockquote {
+  margin: 1.5rem 0;
+  padding-left: 1.25rem;
+  border-left: 3px solid var(--accent);
+  color: var(--ink-soft);
+}
+
+.entry-content figure { margin: 2rem 0; }
+.entry-content figcaption {
+  font-family: var(--sans);
+  font-size: 0.8rem;
+  color: var(--ink-soft);
+  text-align: center;
+}
+
+.entry-content table { width: 100%; border-collapse: collapse; font-family: var(--sans); font-size: 0.9rem; }
+.entry-content th,
+.entry-content td { border: 1px solid var(--rule); padding: 0.5rem 0.7rem; text-align: left; }
+
+.entry-footer {
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--rule);
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+}
+
+.entry-footer a { color: var(--ink-soft); }
+
+/* ------------------------------------------------------------ index/archive */
+
+.post-list { display: flex; flex-direction: column; gap: 3rem; padding-top: 2.5rem; }
+
+.post-summary .entry-title { font-size: 1.75rem; margin: 0 0 0.3rem; }
+.post-summary .entry-title a { color: var(--ink-strong); text-decoration: none; }
+.post-summary .entry-title a:hover { color: var(--accent); }
+
+.post-summary__thumb { display: block; margin-bottom: 1rem; }
+.post-summary__thumb img { width: 100%; border-radius: 3px; }
+
+.post-summary__excerpt {
+  font-family: var(--body-font);
+  font-size: 1.02rem;
+  line-height: 1.65;
+  margin: 0.9rem 0 0.6rem;
+}
+
+.more-link { font-family: var(--sans); font-size: 0.9rem; }
+
+.pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 3.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--rule);
+  font-size: 0.9rem;
+}
+
+.pagination__page { color: var(--ink-soft); }
+.empty { color: var(--ink-soft); font-style: italic; }
+
+/* ---------------------------------------------------------------- comments */
+
+.comments { margin-top: 3.5rem; padding-top: 1.5rem; border-top: 1px solid var(--rule); }
+.comments__title { font-size: 1.2rem; margin: 0 0 1rem; }
+
+.comment { padding: 1.1rem 0; border-bottom: 1px solid var(--rule); }
+.comment:last-child { border-bottom: 0; }
+.comment.is-reply { margin-left: 2rem; }
+.comment__meta { font-size: 0.85rem; color: var(--ink-soft); margin-bottom: 0.3rem; }
+.comment__body { font-family: var(--body-font); font-size: 1rem; }
+.comment__body p { margin: 0 0 0.6rem; }
+
+/* ------------------------------------------------------------------ footer */
+
+.site-footer {
+  border-top: 1px solid var(--rule);
+  padding: 1.75rem 0;
+  text-align: center;
+  color: var(--ink-soft);
+  font-size: 0.85rem;
+}
+
+.site-footer a { color: var(--ink-soft); }
+/* --- WordPress block classes ---------------------------------------------
+   Imported content carries WordPress's own block and alignment classes.
+   WordPress ships these styles as part of its themes, so a post rendered
+   without them loses its layout — centred images drift left, tables lose their
+   stripes, separators vanish. Scoped to .entry-content so nothing leaks elsewhere.
+   Only the classes that actually appear in the imported content are covered. */
+
+/* Alignment. display:table shrink-wraps the figure to its image so the auto
+   margins have something to centre, which is how WordPress does it. */
+.entry-content .aligncenter,
+.entry-content figure.aligncenter {
+  display: table;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.entry-content .aligncenter figcaption { display: table-caption; caption-side: bottom; }
+
+.entry-content .alignleft {
+  float: left;
+  margin: 0.5rem 1.5rem 1rem 0;
+}
+
+.entry-content .alignright {
+  float: right;
+  margin: 0.5rem 0 1rem 1.5rem;
+}
+
+.entry-content .alignnone { margin-left: 0; margin-right: 0; }
+
+/* Floats must not escape the article. */
+.entry-content::after { content: ""; display: table; clear: both; }
+
+.entry-content .alignwide,
+.entry-content .alignfull {
+  max-width: min(100vw, 58rem);
+  margin-left: 50%;
+  transform: translateX(-50%);
+}
+
+/* Images */
+.entry-content .wp-block-image { margin: 2rem 0; }
+.entry-content .wp-block-image img { height: auto; max-width: 100%; }
+.entry-content .wp-block-image.is-resized img { width: auto; }
+.entry-content .size-full img, .entry-content img.size-full { width: 100%; }
+
+/* Preformatted and code — by far the most common blocks in this content. */
+.entry-content .wp-block-preformatted,
+.entry-content .wp-block-code {
+  background: var(--bg-soft);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  padding: 1rem;
+  overflow-x: auto;
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* Quotes */
+.entry-content .wp-block-quote {
+  margin: 2rem 0;
+  padding-left: 1.25rem;
+  border-left: 3px solid var(--rule);
+  color: var(--ink-soft);
+}
+
+.entry-content .wp-block-quote cite {
+  display: block;
+  margin-top: 0.5rem;
+  font-family: var(--sans);
+  font-size: 0.82rem;
+  font-style: normal;
+}
+
+/* Separators */
+.entry-content .wp-block-separator {
+  border: 0;
+  border-top: 1px solid var(--rule);
+  margin: 2.5rem auto;
+  max-width: 8rem;
+}
+
+.entry-content .wp-block-separator.is-style-wide { max-width: 100%; }
+
+/* Spacer height comes from an inline style; this only stops floats bleeding. */
+.entry-content .wp-block-spacer { clear: both; }
+
+/* Tables. Older exports put the block class straight on the <table>; newer
+   ones wrap it in a <figure>. This content has both. */
+.entry-content .wp-block-table { margin: 2rem 0; }
+.entry-content figure.wp-block-table { overflow-x: auto; }
+
+.entry-content table.wp-block-table,
+.entry-content .wp-block-table table { width: 100%; border-collapse: collapse; }
+
+.entry-content .wp-block-table.is-style-stripes tbody tr:nth-child(odd) {
+  background: var(--bg-soft);
+}
+
+.entry-content .wp-block-table.is-style-stripes td,
+.entry-content .wp-block-table.is-style-stripes th { border-color: transparent; }
+
+/* Embeds. Wordpress::EmbedRenderer turns a stored oEmbed URL into an iframe at
+   render time; providers it doesn't handle keep the URL as readable text, so
+   the responsive box is applied only where an iframe actually exists. */
+.entry-content .wp-block-embed { margin: 2rem 0; }
+.entry-content .wp-block-embed__wrapper { word-break: break-word; }
+
+.entry-content .wp-block-embed__wrapper:has(> iframe) {
+  position: relative;
+  height: 0;
+  padding-top: 56.25%;
+}
+
+/* WordPress records the ratio as a class; this content uses 16:9 and 4:3. */
+.entry-content .wp-embed-aspect-4-3 .wp-block-embed__wrapper:has(> iframe) { padding-top: 75%; }
+.entry-content .wp-embed-aspect-1-1 .wp-block-embed__wrapper:has(> iframe) { padding-top: 100%; }
+.entry-content .wp-embed-aspect-9-16 .wp-block-embed__wrapper:has(> iframe) { padding-top: 177.78%; }
+
+.entry-content .wp-block-embed__wrapper > iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+/* WordPress core palette entries used by this content. */
+.entry-content .has-text-color.has-cyan-bluish-gray-color { color: #abb8c3; }
+
+/* -------------------------------------------------------------- responsive */
+
+/* Mobile first: everything above is the small-screen layout. These are the
+   breakpoints Independent Publisher uses, kept so the type scale changes at
+   the same places. */
+
+@media (min-width: 518px) {
+  .cover-meta .entry-title { font-size: 3rem; }
+  .entry-header .entry-title { font-size: 2.5em; }
+
+  /* Body copy steps up from 1.063rem to the base 1.1875rem. Small screens get
+     the smaller size so a long word still fits; everything else reads at 19px. */
+  .entry-content,
+  .post-summary__excerpt { font-size: inherit; }
+}
+
+@media (min-width: 783px) {
+  .post-cover { padding: var(--cover-pad-md) 0 30px; }
+  .wrap, .cover-meta { padding: 0 40px; }
+}
+
+@media (min-width: 992px) {
+  .post-cover { padding: var(--cover-pad-lg) 0 30px; }
+
+  /* The reading column widens on desktop. The reference reaches this by way of
+     a 1080px wrapper with 40px of padding; this theme carries no sidebar, so
+     the title over the cover stays on the same measure as the body and the two
+     line up. */
+  :root { --measure: 1000px; }
+}
+
+/* A cover is a decorative fade; someone who has asked for less motion should
+   not get a moving opacity as they scroll. theme.js checks this too. */
+@media (prefers-reduced-motion: reduce) {
+  .cover-meta { opacity: 1 !important; }
+  * { scroll-behavior: auto !important; }
+}

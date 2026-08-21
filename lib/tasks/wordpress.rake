@@ -40,6 +40,33 @@ namespace :wordpress do
     puts "Re-enqueued #{items.count} image(s)."
   end
 
+  desc "Check every stored image is really in the object store: rake wordpress:verify_media[reset]"
+  task :verify_media, [ :reset ] => :environment do |_task, args|
+    reset = args[:reset].to_s == "reset"
+
+    puts "Checking #{MediaItem.stored.count} stored image(s) against #{KantanPress::Config.storage_backend}..."
+    result = Wordpress::MediaVerifier.call(reset: reset)
+
+    if result.ok?
+      puts "  all #{result.checked} present."
+      next
+    end
+
+    puts "  #{result.missing.size} of #{result.checked} missing from the store:"
+    result.missing.first(20).each do |item|
+      featured = Post.where(featured_media_item_id: item.id).pluck(:slug)
+      note = featured.any? ? "  (featured on #{featured.join(', ')})" : ""
+      puts "    #{item.key}#{note}"
+    end
+    puts "    ..." if result.missing.size > 20
+
+    if reset
+      puts "\n  Reset to pending. Run `bin/rails wordpress:retry_media` then `bin/jobs` to re-fetch."
+    else
+      puts "\n  Re-run as `rake wordpress:verify_media[reset]` to queue them for re-fetching."
+    end
+  end
+
   desc "Report on media fetch progress"
   task media_status: :environment do
     MediaItem.group(:status).count.sort.each { |status, count| puts format("  %-8s %d", status, count) }

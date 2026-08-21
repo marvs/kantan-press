@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ page.title }}</title>
+
+    {%- if page.description != blank %}
+    <meta name="description" content="{{ page.description }}">
+    {%- endif %}
+    {%- if page.canonical_url != blank %}
+    <link rel="canonical" href="{{ page.canonical_url }}">
+    <meta property="og:url" content="{{ page.canonical_url }}">
+    {%- endif %}
+    <meta property="og:title" content="{{ page.title }}">
+    <meta property="og:type" content="{{ page.kind }}">
+    {%- if page.image_url != blank %}
+    <meta property="og:image" content="{{ page.image_url }}">
+    {%- endif %}
+
+    <link rel="icon" href="/icon.png" type="image/png">
+    <link rel="alternate" type="application/atom+xml" title="{{ site.title }}" href="{{ site.feed_url }}">
+    <link rel="stylesheet" href="{{ 'theme.css' | asset_url }}">
+
+    {%- comment -%}
+      The only place theme settings reach the page. Each one is validated
+      against this theme's declared schema before it is stored, so a value can
+      never be anything but a #rrggbb colour or one of the listed options.
+    {%- endcomment -%}
+    <style>
+      :root {
+        --accent: {{ settings.accent_color }};
+        --body-font: {% if settings.body_font == "sans" %}var(--sans){% else %}var(--serif){% endif %};
+        {%- case settings.cover_height %}
+        {%- when "short" %}
+        --cover-pad: 15vh; --cover-pad-md: 22vh; --cover-pad-lg: 30vh;
+        {%- when "tall" %}
+        --cover-pad: 35vh; --cover-pad-md: 48vh; --cover-pad-lg: 62vh;
+        {%- else %}
+        --cover-pad: 25vh; --cover-pad-md: 35vh; --cover-pad-lg: 48vh;
+        {%- endcase %}
+      }
+    </style>
+
+    <script src="{{ 'theme.js' | asset_url }}" defer></script>
+  </head>
+
+  <body>
+    {{ content_for_layout }}
+
+    <footer class="site-footer">
+      <div class="wrap">
+        <a href="{{ site.url }}">{{ site.title }}</a> ·
+        <a href="{{ site.feed_url }}">Feed</a> ·
+        Powered by Kantan Press
+      </div>
+    </footer>
+  </body>
+</html>

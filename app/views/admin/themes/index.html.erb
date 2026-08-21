@@ -1,0 +1,116 @@
+<% content_for :title, "Themes" %>
+
+<div class="admin-head">
+  <h1>Themes</h1>
+</div>
+
+<% if @install_errors.present? %>
+  <div class="card" style="border-color:var(--danger);margin-bottom:1.25rem">
+    <div class="card-head" style="color:var(--danger)">That theme was not installed</div>
+    <div class="card-body">
+      <ul style="margin:0;padding-left:1.1rem;font-size:0.88rem">
+        <% @install_errors.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  </div>
+<% end %>
+
+<div class="row">
+  <div class="main">
+    <% if @bundles.any? %>
+      <div class="theme-grid">
+        <% @bundles.each do |bundle| %>
+          <% active = @selection&.bundle&.slug == bundle.slug %>
+          <div class="card theme-card <%= "is-active" if active %>">
+            <div class="theme-card__shot">
+              <% if bundle.screenshot %>
+                <%= image_tag theme_screenshot_path(bundle.slug),
+                      alt: "#{bundle.name} screenshot", loading: "lazy" %>
+              <% else %>
+                <span class="muted">No screenshot</span>
+              <% end %>
+            </div>
+
+            <div class="card-body">
+              <div class="theme-card__head">
+                <strong><%= bundle.name %></strong>
+                <% if active %><span class="pill pill-published">Active</span><% end %>
+              </div>
+
+              <p class="muted theme-card__meta">
+                Version <%= bundle.version %><% if bundle.author.present? %> · <%= bundle.author %><% end %>
+                <% if bundle.builtin? %> · ships with Kantan Press<% end %>
+              </p>
+
+              <% if bundle.description.present? %>
+                <p class="theme-card__desc"><%= bundle.description %></p>
+              <% end %>
+
+              <div class="theme-card__actions">
+                <% unless active %>
+                  <%= button_to "Activate", activate_admin_theme_path(bundle.slug), class: "btn btn-small" %>
+                <% end %>
+                <% if bundle.settings_schema.any? %>
+                  <%= link_to "Settings", edit_admin_theme_path(bundle.slug), class: "btn btn-secondary btn-small" %>
+                <% end %>
+                <% unless bundle.builtin? || active %>
+                  <%= button_to "Uninstall", admin_theme_path(bundle.slug), method: :delete,
+                        class: "btn btn-danger btn-small",
+                        form: { data: { turbo_confirm: "Uninstall #{bundle.name}? Its files are deleted." } } %>
+                <% end %>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="card"><div class="card-body empty">
+        No themes installed. Upload one to get started.
+      </div></div>
+    <% end %>
+  </div>
+
+  <div class="side">
+    <div class="card">
+      <div class="card-head">Install a theme</div>
+      <div class="card-body">
+        <%= form_with url: admin_themes_path, method: :post do |form| %>
+          <div class="field">
+            <%= form.label :file, "Theme archive (.zip)" %>
+            <%= form.file_field :file, accept: ".zip,application/zip" %>
+            <p class="hint">
+              A theme is a zip holding <span class="mono">theme.json</span>, a
+              <span class="mono">templates/</span> folder and an
+              <span class="mono">assets/</span> folder.
+            </p>
+          </div>
+
+          <div class="field">
+            <label style="font-weight:400;font-size:0.82rem">
+              <%= form.check_box :overwrite, {}, "1", nil %>
+              Replace the theme if it is already installed
+            </label>
+          </div>
+
+          <%= form.submit "Install theme", class: "btn" %>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">What a theme can do</div>
+      <div class="card-body" style="font-size:0.86rem;line-height:1.6">
+        <p style="margin-top:0">
+          Themes are written in Liquid, which is a sandbox: a theme controls the
+          markup and styling of the public site, and cannot run Ruby, read the
+          database or reach your storage credentials.
+        </p>
+        <p style="margin-bottom:0">
+          The admin and the editor are never themed.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

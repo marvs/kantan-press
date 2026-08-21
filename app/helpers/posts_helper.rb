@@ -24,10 +24,14 @@ module PostsHelper
   end
 
   # Plain text version for meta tags and anywhere markup would be wrong.
+  #
+  # Deliberately String#truncate rather than the view helper: the helper escapes
+  # its result and marks it html_safe, which would escape the text a second time
+  # once the caller renders it.
   def excerpt_plain_text(post, length: 220)
-    source = post.excerpt.presence || post.content.to_s.gsub(/<!--.*?-->/m, " ")
+    source = post.excerpt.presence || post.content
 
-    truncate(strip_tags(source).squish, length: length, separator: " ")
+    KantanPress::PlainText.call(source).truncate(length, separator: " ")
   end
 
   def post_date(post)

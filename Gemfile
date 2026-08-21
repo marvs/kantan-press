@@ -24,6 +24,14 @@ gem "nokogiri"
 # Uploads media to any S3-compatible object store (Cloudflare R2, S3, Spaces)
 gem "aws-sdk-s3", "~> 1.0", require: false
 
+# Renders themes. Liquid is a sandbox: a template cannot reach Ruby objects that
+# were not handed to it as a drop, so a theme downloaded from a stranger cannot
+# read the database, ENV, or the S3 credentials.
+gem "liquid", "~> 5.5"
+
+# Unpacks an uploaded theme .zip
+gem "rubyzip", "~> 2.3", require: "zip"
+
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem "tzinfo-data", platforms: %i[ windows jruby ]
 

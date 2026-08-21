@@ -7,6 +7,8 @@ serves the result at the same URLs — while storing post bodies in WordPress's
 own block format so nothing is lost in translation.
 
 - **Rails 8.1**, SQLite, Solid Queue
+- **Themes** in Liquid, importable as a zip, with a full-width cover-image theme
+  in the box
 - **Media on any S3-compatible store** — Cloudflare R2, AWS S3, DigitalOcean
   Spaces — or local disk in development
 - **Deploys with Kamal** onto a small VPS, happily alongside other apps
@@ -61,6 +63,7 @@ does not block, and individual failures retry on their own.
 ```bash
 bin/rails wordpress:media_status   # how many stored / pending / failed
 bin/rails wordpress:retry_media    # re-queue anything not yet stored
+bin/rails wordpress:verify_media   # check every "stored" image is really in the bucket
 ```
 
 Re-running the same export updates records in place — it matches on WordPress
@@ -106,6 +109,8 @@ Copy `.env.example`. Every value can live in ENV or in Rails credentials under
 
 | Variable | Purpose |
 |---|---|
+| `KANTAN_SITE_TITLE` | Site name themes render; defaults to "Kantan Press" |
+| `KANTAN_SITE_DESCRIPTION` | Optional tagline under the site name |
 | `KANTAN_MEDIA_BASE_URL` | Host written into post content for images |
 | `KANTAN_LEGACY_SITE_URL` | Old site host; read from the export when unset |
 | `KANTAN_STORAGE_BACKEND` | `disk` or `s3`; inferred from the S3 settings |
@@ -131,6 +136,13 @@ app/services/object_store.rb
 app/jobs/wordpress/
   import_job.rb        runs an admin-uploaded export
   fetch_media_job.rb   one per image, with backoff and retries
+app/services/themes/
+  bundle.rb            one theme directory; the path-safety chokepoint
+  registry.rb          discovers themes in themes/ and storage/themes/
+  renderer.rb          renders a template inside the theme's layout
+  installer.rb         validates and unpacks an uploaded .zip
+  drops/               the only objects a template can reach
+themes/independent/    the theme that ships with the app
 ```
 
 ## Tests
@@ -144,6 +156,40 @@ bundle exec brakeman
 The importer is covered against a fixture that mirrors a real export: Gutenberg
 and classic posts side by side, srcset variants, PHP-serialized attachment
 metadata, threaded comments, spam, a page, a draft and a revision.
+
+## Themes
+
+The public site is rendered by the active theme. Pick or import one at
+**Admin → Themes**.
+
+A theme is a directory holding a `theme.json` manifest, Liquid templates and
+static assets. Themes that ship with the app live in `themes/`; uploaded ones
+are unpacked into `storage/themes/`, which Kamal keeps on the persistent volume,
+so they survive a deploy.
+
+**Themes are Liquid, not ERB, and that is the point.** Liquid is a sandbox: a
+template reaches only the objects it is handed, so a theme downloaded from a
+stranger cannot run Ruby, read the database, or reach your S3 credentials.
+Installing a WordPress theme means trusting it with your whole server; installing
+a Kantan Press theme does not.
+
+The zip is treated as hostile until proven otherwise — uncompressed size and
+entry-count caps, an extension allow-list, and refusal of any entry that is a
+symlink or that would write outside the theme directory. Nothing is written
+until the whole archive has passed and the result validates as a theme.
+
+If a theme fails to render, production logs the error and falls back to the
+app's own ERB views, so a broken theme cannot take the site down. In development
+it raises instead.
+
+Writing one: [docs/THEMES.md](docs/THEMES.md).
+
+### The theme in the box
+
+**Independent** is a port of Raam Dev's Independent Publisher: a full-width
+cover image carrying the post title, which fades out as you scroll; PT Serif for
+the body and PT Sans for everything else, both self-hosted; and no sidebar. Four
+settings — accent colour, cover height, word count, body font.
 
 ## The editor
 
@@ -183,6 +229,10 @@ whenever a post references them directly, which classic-editor posts often do.
 
 - **Accepting new comments.** Imported ones display read-only; there is no
   submission form and so no spam handling to own.
+- **Sidebars and widget areas.** The theme in the box has none; a theme that
+  wants one has no API to hang it on yet.
+- **Theme partials.** `{% render %}` has no file system wired up, so shared
+  markup is duplicated between a theme's templates.
 - **Static generation.** The public side is server-rendered and cheap to cache;
   freezing it to files is a rake task away because the controllers are pure.
 - **Responsive images.** See the fidelity note above.
