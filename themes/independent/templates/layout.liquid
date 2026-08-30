@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ page.title }}</title>
+    <title>{{ page.browser_title }}</title>
 
     {%- if page.description != blank %}
     <meta name="description" content="{{ page.description }}">
@@ -52,7 +52,7 @@
       <div class="wrap">
         <a href="{{ site.url }}">{{ site.title }}</a> ·
         <a href="{{ site.feed_url }}">Feed</a> ·
-        Powered by Kantan Press
+        Powered by <a href="https://github.com/marvs/kantan-press" target="_blank" rel="noopener">Kantan Press</a>
       </div>
     </footer>
   </body>

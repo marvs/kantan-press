@@ -406,6 +406,46 @@ h1, h2, h3, h4, h5, h6 {
 .entry-meta a { color: var(--ink-soft); }
 .entry-meta > * + *::before { content: " · "; opacity: 0.6; }
 
+/* The post byline. Its date and word count carry an icon rather than the dot
+   separator the other meta lines use, so the dot is cancelled here and the
+   flex gaps do the spacing instead. */
+.byline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.15rem 0.6rem;
+}
+
+.byline > * + *::before { content: none; }
+
+.byline__stats {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.15rem 0.9rem;
+}
+
+.byline__stat {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.32rem;
+}
+
+.byline__icon {
+  width: 0.95em;
+  height: 0.95em;
+  flex: none;
+  /* An SVG has no baseline of its own, so a baseline-aligned flex item would
+     hang off the bottom of the text. Centre it against the line instead. */
+  align-self: center;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.75;
+}
+
 .page-header { padding-top: 2.5rem; }
 .page-title { font-size: 2rem; margin: 0 0 0.3rem; }
 .page-description { color: var(--ink-soft); font-size: 0.95rem; margin: 0; }
@@ -785,6 +825,10 @@ h1, h2, h3, h4, h5, h6 {
    A plate with a cover still shows: that is the post's own content. */
 @media (max-width: 639px) {
   .post-summary__plate:not(.post-summary__plate--photo) { display: none; }
+
+  /* The date and word count drop to a row of their own under the category.
+     flex-basis rather than a break element, so the wide layout needs no undo. */
+  .byline__stats { flex-basis: 100%; }
 }
 
 @media (min-width: 640px) {

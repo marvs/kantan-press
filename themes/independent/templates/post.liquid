@@ -4,6 +4,32 @@
   featured image would open on a black band.
 {%- endcomment -%}
 
+{%- comment -%}
+  The date and word count are captured apart from the rest of the byline so
+  they can share one wrapper: on a narrow screen that wrapper takes a row of
+  its own under the category, and on a wide one it sits inline. Only emit it
+  when there is something in it, or an empty box takes that row.
+{%- endcomment -%}
+{%- capture byline_stats -%}
+  {%- if post.published_at -%}
+    <span class="byline__stat">
+      <svg class="byline__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M7 2.75v3M17 2.75v3M3 9.25h18M4.5 5.5h15A1.5 1.5 0 0 1 21 7v13a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 20V7a1.5 1.5 0 0 1 1.5-1.5Z"/>
+      </svg>
+      <span>{{ post.published_at | date: "%B %-d, %Y" }}</span>
+    </span>
+  {%- endif -%}
+  {%- if settings.show_word_count and post.word_count > 0 -%}
+    <span class="byline__stat">
+      <svg class="byline__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M13.75 2.5H6.5A1.5 1.5 0 0 0 5 4v16a1.5 1.5 0 0 0 1.5 1.5h11A1.5 1.5 0 0 0 19 20V7.75L13.75 2.5Z"/>
+        <path d="M13.5 2.75V8.25h5.25M8.5 12.75h7M8.5 16.5h4.5"/>
+      </svg>
+      <span>{{ post.word_count | number_with_delimiter }} Words</span>
+    </span>
+  {%- endif -%}
+{%- endcapture -%}
+
 {%- capture byline -%}
   {%- if post.author_name != blank %}<span>{{ post.author_name }}</span>{% endif -%}
   {%- if post.categories.size > 0 -%}
@@ -13,10 +39,7 @@
       {%- endfor -%}
     </span>
   {%- endif -%}
-  {%- if post.published_at %}<span>{{ post.published_at | date: "%B %-d, %Y" }}</span>{% endif -%}
-  {%- if settings.show_word_count and post.word_count > 0 -%}
-    <span>{{ post.word_count | number_with_delimiter }} Words</span>
-  {%- endif -%}
+  {%- if byline_stats != blank %}<span class="byline__stats">{{ byline_stats }}</span>{% endif -%}
 {%- endcapture -%}
 
 {% if post.featured_image %}
@@ -28,7 +51,7 @@
 
     <div class="cover-meta">
       <h1 class="entry-title">{{ post.title }}</h1>
-      <div class="entry-meta">{{ byline }}</div>
+      <div class="entry-meta byline">{{ byline }}</div>
     </div>
   </div>
 {% else %}
@@ -44,7 +67,7 @@
     {% unless post.featured_image %}
       <header class="entry-header">
         <h1 class="entry-title">{{ post.title }}</h1>
-        <div class="entry-meta">{{ byline }}</div>
+        <div class="entry-meta byline">{{ byline }}</div>
       </header>
     {% endunless %}
 

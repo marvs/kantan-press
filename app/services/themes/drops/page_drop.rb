@@ -16,6 +16,18 @@ module Themes
       end
 
       def title = h(@title)
+
+      # What the browser tab shows. Separate from #title because og:title wants
+      # the bare one — a share card that repeats the site name reads as noise.
+      # The home page passes the site title as its own title, so guard against
+      # saying it twice.
+      def browser_title
+        site_title = KantanPress::Config.site_title
+
+        return h(site_title) if @title.blank? || @title == site_title
+
+        "#{h(@title)} - #{h(site_title)}"
+      end
       def kind = h(@kind)
       def description = optional(@description)
       def canonical_url = optional(@canonical_url)

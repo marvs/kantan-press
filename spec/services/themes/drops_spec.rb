@@ -195,6 +195,41 @@ RSpec.describe "theme drops" do
     end
   end
 
+  describe Themes::Drops::PageDrop do
+    before { allow(KantanPress::Config).to receive(:site_title).and_return("The Stoic Engineer") }
+
+    it "appends the site title to the browser title" do
+      drop = described_class.new(title: "Live On")
+
+      expect(render("{{ page.browser_title }}", "page" => drop)).to eq("Live On - The Stoic Engineer")
+    end
+
+    it "leaves page.title alone, so og:title stays the bare title" do
+      drop = described_class.new(title: "Live On")
+
+      expect(render("{{ page.title }}", "page" => drop)).to eq("Live On")
+    end
+
+    it "does not repeat the site title on the home page" do
+      drop = described_class.new(title: "The Stoic Engineer")
+
+      expect(render("{{ page.browser_title }}", "page" => drop)).to eq("The Stoic Engineer")
+    end
+
+    it "falls back to the site title when the page has none" do
+      drop = described_class.new(title: nil)
+
+      expect(render("{{ page.browser_title }}", "page" => drop)).to eq("The Stoic Engineer")
+    end
+
+    it "escapes a title that contains markup" do
+      drop = described_class.new(title: %(<script>alert("x")</script>))
+
+      expect(render("{{ page.browser_title }}", "page" => drop))
+        .to eq("&lt;script&gt;alert(&quot;x&quot;)&lt;/script&gt; - The Stoic Engineer")
+    end
+  end
+
   describe Themes::Drops::PaginationDrop do
     it "gives urls for the neighbouring pages" do
       drop = described_class.new(current_page: 2, total_pages: 3, path_builder: ->(page) { "/?page=#{page}" })

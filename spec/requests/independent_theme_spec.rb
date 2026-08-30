@@ -45,7 +45,9 @@ RSpec.describe "the Independent theme" do
     it "emits the head metadata the ERB view used to" do
       get "/kantan-dev"
 
-      expect(response.body).to include("<title>Kantan Dev</title>")
+      expect(response.body).to include("<title>Kantan Dev - Kantan Press</title>")
+      # The tab gets the site name appended; the share card does not.
+      expect(response.body).to include('<meta property="og:title" content="Kantan Dev">')
       expect(response.body).to include('<link rel="canonical" href="http://www.example.com/kantan-dev">')
       expect(response.body).to include('<meta property="og:type" content="article">')
       expect(response.body).to include('<meta property="og:image" content="/media/wp-content/uploads/2026/07/cover.jpg">')

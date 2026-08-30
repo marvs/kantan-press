@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title><%= content_for(:title) || "Kantan Press" %></title>
+    <title><%= "#{content_for(:title)} - " if content_for?(:title) %><%= KantanPress::Config.site_title %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <%= csrf_meta_tags %>
@@ -31,7 +31,7 @@
     </main>
 
     <footer class="site-footer">
-      <p><%= link_to "Feed", feed_path %> &middot; Powered by Kantan Press</p>
+      <p><%= link_to "Feed", feed_path %> &middot; Powered by <%= link_to "Kantan Press", "https://github.com/marvs/kantan-press", target: "_blank", rel: "noopener" %></p>
     </footer>
   </body>
 </html>
