@@ -30,7 +30,7 @@ gem "aws-sdk-s3", "~> 1.0", require: false
 gem "liquid", "~> 5.5"
 
 # Unpacks an uploaded theme .zip
-gem "rubyzip", "~> 2.3", require: "zip"
+gem "rubyzip", "~> 3.5", require: "zip"
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem "tzinfo-data", platforms: %i[ windows jruby ]
