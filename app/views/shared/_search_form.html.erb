@@ -1,0 +1,7 @@
+<%# The ERB safety net's search field. The public site normally renders through
+    the active theme; this is what a reader sees if that theme raises. %>
+<%= form_with url: search_path, method: :get, class: "site-search" do |form| %>
+  <%= form.label :q, "Search articles", class: "visually-hidden" %>
+  <%= form.search_field :q, value: query, placeholder: "Search articles…" %>
+  <%= form.submit "Search" %>
+<% end %>

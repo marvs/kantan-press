@@ -1,0 +1,91 @@
+{%- comment -%}
+  Search results. The field is repeated here, pre-filled, so a reader can refine
+  a query without going back to the home page.
+
+  The card markup is the same as archive.liquid's on purpose: {% render %} has
+  no file system wired up yet, so shared markup is duplicated between templates
+  rather than extracted. See docs/THEMES.md.
+{%- endcomment -%}
+
+<header class="site-header">
+  <div class="wrap">
+    <p class="site-title"><a href="{{ site.url }}">{{ site.title }}</a></p>
+
+    {% if site.description != blank %}<p class="site-description">{{ site.description }}</p>{% endif %}
+
+    <nav class="site-nav">
+      {%- for category in site.categories %}
+        <a href="{{ category.url }}">{{ category.name }} <span class="site-nav__count">{{ category.post_count }}</span></a>
+      {%- endfor %}
+    </nav>
+  </div>
+</header>
+
+<main class="site-main">
+  <div class="wrap">
+    <header class="page-header">
+      <h1 class="page-title">Search</h1>
+    </header>
+
+    <form class="site-search" action="{{ site.search_url }}" method="get" role="search">
+      <label class="visually-hidden" for="search-field">Search articles</label>
+      <input class="site-search__field" type="search" id="search-field" name="q"
+             value="{{ search.query }}" placeholder="Search articles&hellip;">
+      <button class="site-search__submit" type="submit">Search</button>
+    </form>
+
+    {% unless search.performed %}
+      <p class="empty">Search the articles by title, or by what is written in them.</p>
+    {% else %}
+      {% if posts.size > 0 %}
+        <p class="search-count">
+          {{ search.total_count }} article{% unless search.total_count == 1 %}s{% endunless %} found.
+        </p>
+
+        <div class="post-list">
+          {% for post in posts %}
+            <article class="post-summary">
+              {%- comment -%}
+                aria-hidden because the title beside it links to the same post: a
+                screen reader or a keyboard user should meet one link per entry.
+              {%- endcomment -%}
+              <a class="post-summary__plate{% if post.featured_image %} post-summary__plate--photo{% endif %}"
+                 href="{{ post.url }}" aria-hidden="true" tabindex="-1">
+                {% if post.featured_image %}
+                  <img src="{{ post.featured_image.url }}" alt="" loading="lazy" decoding="async">
+                {% endif %}
+                {% if post.published_at %}
+                  <span class="dateline">
+                    <span class="dateline__month">{{ post.published_at | date: "%b" }}</span>
+                    <span class="dateline__year">{{ post.published_at | date: "%Y" }}</span>
+                  </span>
+                {% endif %}
+              </a>
+
+              <div class="post-summary__text">
+                <h2 class="entry-title"><a href="{{ post.url }}">{{ post.title }}</a></h2>
+
+                <div class="entry-meta">
+                  {%- if post.published_at %}<span>{{ post.published_at | date: "%B %-d, %Y" }}</span>{% endif -%}
+                </div>
+
+                <p class="post-summary__excerpt">{{ post.excerpt_html }}</p>
+                <a class="more-link" href="{{ post.url }}">Continue reading &rarr;</a>
+              </div>
+            </article>
+          {% endfor %}
+        </div>
+
+        {% if pagination.total_pages > 1 %}
+          <nav class="pagination">
+            <span>{% if pagination.previous_url %}<a href="{{ pagination.previous_url }}">&larr; Newer</a>{% endif %}</span>
+            <span class="pagination__page">Page {{ pagination.current_page }} of {{ pagination.total_pages }}</span>
+            <span>{% if pagination.next_url %}<a href="{{ pagination.next_url }}">Older &rarr;</a>{% endif %}</span>
+          </nav>
+        {% endif %}
+      {% else %}
+        <p class="empty">No articles match &ldquo;{{ search.query }}&rdquo;.</p>
+      {% endif %}
+    {% endunless %}
+  </div>
+</main>

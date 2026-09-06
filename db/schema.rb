@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_21_140000) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_06_040204) do
   create_table "categories", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.text "description"
@@ -101,6 +101,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_21_140000) do
   create_table "posts", force: :cascade do |t|
     t.integer "author_id"
     t.text "content"
+    t.text "content_plain"
     t.datetime "created_at", null: false
     t.text "excerpt"
     t.integer "featured_media_item_id"

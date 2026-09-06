@@ -139,6 +139,12 @@ RSpec.describe "theme drops" do
       expect(output).to eq("Kantan Press|/|/feed|AI")
     end
 
+    # Every template gets `site`, so a theme can put the search field in the
+    # masthead, the footer or nowhere at all.
+    it "gives the search form somewhere to post to" do
+      expect(render("{{ site.search_url }}", "site" => described_class.new)).to eq("/search")
+    end
+
     # A nav link to an empty archive is a dead end. WordPress hides empty terms
     # from wp_list_categories by default for the same reason.
     it "leaves out a category with nothing published in it" do
@@ -227,6 +233,62 @@ RSpec.describe "theme drops" do
 
       expect(render("{{ page.browser_title }}", "page" => drop))
         .to eq("&lt;script&gt;alert(&quot;x&quot;)&lt;/script&gt; - The Stoic Engineer")
+    end
+
+    # Search result pages should not be indexed; WordPress noindexes its own.
+    it "carries a robots directive only when the app sets one" do
+      expect(render("{{ page.robots }}", "page" => described_class.new(title: "Live On"))).to eq("")
+      expect(render("{{ page.robots }}", "page" => described_class.new(title: "Search", robots: "noindex, follow")))
+        .to eq("noindex, follow")
+    end
+  end
+
+  describe Themes::Drops::ArchiveDrop do
+    it "exposes the heading fields an archive template reads" do
+      drop = described_class.new(title: "July 2026", kind: "month", year: 2026, month: 7)
+
+      expect(render("{{ archive.title }}|{{ archive.kind }}|{{ archive.year }}|{{ archive.month }}",
+                    "archive" => drop)).to eq("July 2026|month|2026|7")
+    end
+
+    # The reason this is a drop rather than the Hash it used to be: a term name
+    # comes out of a WordPress import, and Liquid escapes nothing on its own.
+    it "escapes the title and the description" do
+      drop = described_class.new(title: %(<script>alert("x")</script>), kind: "category",
+                                 description: "<b>bold</b>")
+
+      expect(render("{{ archive.title }}", "archive" => drop))
+        .to eq("&lt;script&gt;alert(&quot;x&quot;)&lt;/script&gt;")
+      expect(render("{{ archive.description }}", "archive" => drop)).to eq("&lt;b&gt;bold&lt;/b&gt;")
+    end
+
+    it "leaves the optional fields empty so a theme can test them" do
+      drop = described_class.new(title: "AI", kind: "category")
+
+      expect(render("[{{ archive.description }}][{{ archive.year }}]", "archive" => drop)).to eq("[][]")
+    end
+  end
+
+  describe Themes::Drops::SearchDrop do
+    it "gives the theme what it needs to render a result page" do
+      drop = described_class.new(query: "kamal", total_count: 3)
+
+      expect(render("{{ search.query }}|{{ search.total_count }}", "search" => drop)).to eq("kamal|3")
+    end
+
+    # The query is the reader's own input, echoed straight back onto the page.
+    it "escapes the query" do
+      drop = described_class.new(query: %(<script>alert("x")</script>), total_count: 0)
+
+      expect(render("{{ search.query }}", "search" => drop))
+        .to eq("&lt;script&gt;alert(&quot;x&quot;)&lt;/script&gt;")
+    end
+
+    it "reports whether a search actually ran, so a theme can prompt instead" do
+      expect(render("{% if search.performed %}ran{% endif %}",
+                    "search" => described_class.new(query: "kamal", total_count: 0))).to eq("ran")
+      expect(render("{% if search.performed %}ran{% endif %}",
+                    "search" => described_class.new(query: "", total_count: 0))).to eq("")
     end
   end
 

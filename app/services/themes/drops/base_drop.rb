@@ -17,6 +17,12 @@ module Themes
       private
         def h(value) = CGI.escapeHTML(value.to_s)
 
+        # nil rather than "" for a field a theme is expected to test with
+        # {% if %}, so an absent value and an empty one read the same.
+        def optional(value)
+          h(value) if value.present?
+        end
+
         def routes = Rails.application.routes.url_helpers
 
         # ActionView helpers, reached without `include` — including them would

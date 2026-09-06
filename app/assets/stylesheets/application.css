@@ -284,6 +284,21 @@ a { color: var(--accent); }
 .page-heading { font-family: var(--serif); font-size: 1.5rem; margin-bottom: 2rem; }
 .empty { color: var(--ink-soft); font-style: italic; }
 
+/* Search. These views are the safety net for a theme that raises, so the field
+   only has to be usable, not styled to match whatever theme was active. */
+.site-search { display: flex; gap: 0.5rem; margin-bottom: 2.5rem; }
+.site-search input[type=search] { flex: 1; min-width: 0; }
+.site-search input[type=submit] { flex: none; }
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  margin: -1px; padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
 /* ----------------------------------------------------------------- admin */
 
 body.admin { background: var(--bg-soft); }
@@ -336,7 +351,7 @@ table.index .muted { color: var(--ink-soft); font-size: 0.85em; }
 .field label { display: block; font-size: 0.82rem; font-weight: 600; margin-bottom: 0.3rem; }
 .field .hint { font-size: 0.78rem; color: var(--ink-soft); margin-top: 0.25rem; }
 
-input[type=text], input[type=email], input[type=password], input[type=datetime-local], input[type=file], select, textarea {
+input[type=text], input[type=search], input[type=email], input[type=password], input[type=datetime-local], input[type=file], select, textarea {
   width: 100%;
   padding: 0.5rem 0.65rem;
   border: 1px solid #c8ccd3;

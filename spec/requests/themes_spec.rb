@@ -123,6 +123,34 @@ RSpec.describe "the public site rendered through a theme" do
     end
   end
 
+  # A theme published before search existed ships no search.liquid. It must
+  # still render results rather than raising, which is why the controller hands
+  # it an archive object as well.
+  describe "a theme that predates search" do
+    before do
+      install(templates: {
+        "layout" => "<html><body>{{ content_for_layout }}</body></html>",
+        "archive" => "ARCHIVE:{{ archive.title }}{% for post in posts %}[{{ post.title }}]{% endfor %}"
+      })
+    end
+
+    it "renders results through archive.liquid" do
+      create(:post, title: "Kantan Dev")
+
+      get search_path(q: "kantan")
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("ARCHIVE:", "[Kantan Dev]")
+    end
+
+    it "escapes the query in the archive title it is given" do
+      get search_path(q: "<script>alert(1)</script>")
+
+      expect(response.body).not_to include("<script>alert(1)</script>")
+      expect(response.body).to include("&lt;script&gt;")
+    end
+  end
+
   describe "when the active theme is broken" do
     before do
       install(templates: { "post" => "{{ post.title }" }) # unclosed output tag
@@ -153,6 +181,21 @@ RSpec.describe "the public site rendered through a theme" do
 
       expect(response).to have_http_status(:ok)
       expect(response.body).to include("post-article", "Kantan Dev")
+    end
+
+    it "still searches, through the ERB views" do
+      create(:post, title: "Kantan Dev")
+
+      get search_path(q: "kantan")
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("Kantan Dev", "1 article found")
+    end
+
+    it "prompts through the ERB views when no query was given" do
+      get search_path
+
+      expect(response.body).to include("Search the articles")
     end
   end
 end

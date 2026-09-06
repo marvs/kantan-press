@@ -13,7 +13,7 @@ class ArchivesController < ApplicationController
     render_themed("archive", fallback: :show,
                   page: Themes::Drops::PageDrop.new(title: "#{Date::MONTHNAMES[@month]} #{@year}"),
                   posts: post_drops(@posts),
-                  archive: { "title" => "#{Date::MONTHNAMES[@month]} #{@year}", "kind" => "month",
-                             "year" => @year, "month" => @month })
+                  archive: Themes::Drops::ArchiveDrop.new(title: "#{Date::MONTHNAMES[@month]} #{@year}",
+                                                          kind: "month", year: @year, month: @month))
   end
 end

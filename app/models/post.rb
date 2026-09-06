@@ -23,6 +23,7 @@ class Post < ApplicationRecord
   }
 
   before_save :set_published_at
+  before_save :set_content_plain
 
   def approved_comments = comments.where(approved: true).order(:published_at)
 
@@ -41,5 +42,15 @@ class Post < ApplicationRecord
   private
     def set_published_at
       self.published_at ||= Time.current if published?
+    end
+
+    # The body is block markup, which is not searchable text: a query for
+    # "image" would match every wp-block-image wrapper. Store the readable form
+    # beside it, using the same extraction excerpts and word counts already use.
+    #
+    # Guarded on the body actually changing so an unrelated save — publishing,
+    # say — does not re-strip several kilobytes of markup for nothing.
+    def set_content_plain
+      self.content_plain = KantanPress::PlainText.call(content) if will_save_change_to_content?
     end
 end

@@ -23,8 +23,14 @@ my-theme/
     ├── index.liquid           required
     ├── post.liquid            required
     ├── page.liquid            optional — falls back to post.liquid
-    └── archive.liquid         optional — falls back to index.liquid
+    ├── archive.liquid         optional — falls back to index.liquid
+    └── search.liquid          optional — falls back to archive.liquid
 ```
+
+The fallbacks chain, and `index.liquid` is required, so a theme that ships none
+of the optional templates still renders every page. A theme written before
+search existed renders results through `archive.liquid` without changing a
+line.
 
 Zip that directory and upload it at **Admin → Themes**. A single wrapper
 directory is fine, so a zip downloaded straight from GitHub works.
@@ -98,6 +104,7 @@ Every template gets `site`, `settings`, `theme` and `page`.
 |---|---|
 | `site.title`, `site.description` | From `KANTAN_SITE_TITLE` / `KANTAN_SITE_DESCRIPTION` |
 | `site.url`, `site.feed_url` | |
+| `site.search_url` | Where a search form posts. On every template, so the field can go in the masthead, the footer, or nowhere |
 | `site.categories`, `site.tags` | Alphabetical, and **only terms with something published in them** — a nav link to an empty archive is a dead end, and WordPress hides empty terms from `wp_list_categories` for the same reason. Each has `name`, `slug`, `url`, `post_count` |
 | `site.pages` | Published pages, by title |
 
@@ -105,8 +112,17 @@ Every template gets `site`, `settings`, `theme` and `page`.
 
 Head metadata, computed by the app so a theme cannot get canonical URLs wrong:
 `page.title`, `page.description`, `page.canonical_url`, `page.image_url`,
-`page.kind` (`article` or `website`). Optional ones are nil when absent, so
-`{% if page.image_url %}` works.
+`page.kind` (`article` or `website`), `page.robots`. Optional ones are nil when
+absent, so `{% if page.image_url %}` works.
+
+`page.robots` is set only where the app wants a `<meta name="robots">` — search
+results, which should not be indexed. Emit it in `layout.liquid`:
+
+```liquid
+{%- if page.robots != blank %}
+<meta name="robots" content="{{ page.robots }}">
+{%- endif %}
+```
 
 ### `post`
 
@@ -138,8 +154,37 @@ Given to `post.liquid` and `page.liquid`, and looped over as `posts` in
 `pagination.current_page`, `total_pages`, `previous_url`, `next_url`. The urls
 are nil at the ends.
 
-`archive.title`, `archive.description`, `archive.kind` (`category`, `tag` or
-`month`).
+`archive.title`, `archive.description`, `archive.kind` (`category`, `tag`,
+`month` or `search`). A month archive also has `archive.year` and
+`archive.month` as numbers, for `{{ archive.year | archive_url: archive.month }}`.
+
+`archive.title` and `archive.description` are escaped like every other text
+field, so write `{{ archive.title }}` without `| escape`.
+
+### `search`
+
+Given to `search.liquid`, along with `posts` and `pagination`. The results page
+also gets an `archive` object, which is what lets a theme with no
+`search.liquid` fall back to `archive.liquid` and still show a heading.
+
+| Field | |
+|---|---|
+| `search.query` | What the reader typed, **escaped** — write `{{ search.query }}` into the field's `value` |
+| `search.performed` | False before anything has been searched for, so the page can prompt rather than say nothing matched |
+| `search.total_count` | How many articles matched, across every page |
+
+A search is a plain GET form, so it works with JavaScript turned off:
+
+```liquid
+<form action="{{ site.search_url }}" method="get" role="search">
+  <input type="search" name="q" value="{{ search.query }}">
+  <button type="submit">Search</button>
+</form>
+```
+
+Titles and body text are searched; categories, tags and pages are not. The body
+is matched as readable text, so a query never matches the block markup around
+it.
 
 ## Filters
 

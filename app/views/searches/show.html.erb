@@ -1,0 +1,25 @@
+<% content_for :title, @query.present? ? "Search results for \"#{@query}\"" : "Search" %>
+
+<h1 class="page-heading">Search</h1>
+
+<%= render "shared/search_form", query: @query %>
+
+<% if @query.blank? %>
+  <p class="empty">Search the articles by title, or by what is written in them.</p>
+<% elsif @posts.any? %>
+  <p class="muted"><%= pluralize(@total_count, "article") %> found.</p>
+
+  <div class="post-list">
+    <%= render partial: "posts/summary", collection: @posts, as: :post %>
+  </div>
+
+  <% if @total_pages > 1 %>
+    <nav class="pagination">
+      <span><%= link_to "← Newer", search_path(q: @query, page: @page - 1) if @page > 1 %></span>
+      <span class="muted">Page <%= @page %> of <%= @total_pages %></span>
+      <span><%= link_to "Older →", search_path(q: @query, page: @page + 1) if @page < @total_pages %></span>
+    </nav>
+  <% end %>
+<% else %>
+  <p class="empty">No articles match “<%= @query %>”.</p>
+<% end %>

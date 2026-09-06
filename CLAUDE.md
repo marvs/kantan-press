@@ -75,6 +75,15 @@ See `docs/THEMES.md` for the theme-author contract and
   does not escape output, so this is what stops an imported WordPress title
   becoming stored XSS. Every public method on a `Liquid::Drop` is callable from a
   template, so helpers on a drop are always `private`.
+- **Only a drop escapes. A plain Hash handed to a template does not.** Passing
+  `archive: { "title" => something_a_person_typed }` puts that string into the
+  page raw — that was a real stored-XSS bug, fixed by `Themes::Drops::ArchiveDrop`.
+  Never hand a template a bare Hash; add a drop instead.
+- **A new template kind is added by chaining `TEMPLATE_FALLBACKS` to a template
+  every theme already ships,** and by passing the object that fallback reads
+  alongside the new one. `search` falls through `archive` to `index`, and the
+  controller passes both `search` and `archive`, so a theme published before the
+  feature renders it instead of raising.
 - **`Themes::Bundle#asset_path` is the only place path safety is decided.** New
   code that reads a file out of a theme goes through it rather than re-checking.
 - A theme error raises outside production and falls back to the ERB views inside
@@ -125,3 +134,17 @@ See `docs/THEMES.md` for the theme-author contract and
 - **Enforce "only one row may be X" in the database**, with a partial unique
   index (`add_index :t, :active, unique: true, where: "active"`), not only in
   the model.
+- **A `LIKE` pattern built from user input needs `sanitize_sql_like` *and* an
+  explicit `ESCAPE '\'` in the SQL.** SQLite only honours the backslash escape
+  when the clause says so, so without it a reader who types `%` gets every row
+  back. `Posts::Search` is the worked example.
+- **To query a derived form of a column, store it.** `posts.content_plain` holds
+  the readable text of the block markup, because searching `content` would match
+  the markup rather than the writing. Fill it in a `before_save` guarded on
+  `will_save_change_to_<column>?` so an unrelated save does not redo the work,
+  and backfill in the migration with a migration-local model class and
+  `update_columns`. Such a column is denormalized: anything writing the source
+  through `update_all` or `insert_all` leaves it stale.
+- **Do not index a column that is only ever matched with `LIKE '%term%'`** —
+  SQLite cannot use the index, so it costs writes and buys nothing. Say so in
+  the migration, or someone will add one later.

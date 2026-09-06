@@ -49,6 +49,23 @@
         </article>
       {% endif %}
 
+      {%- comment -%}
+        Below the latest article rather than in the masthead: a reader who did
+        not come for the newest post has just decided that, and this is where
+        they are when they decide it. A plain GET form, so it works with no
+        JavaScript at all. site.search_url is on every template, so a theme can
+        move it elsewhere.
+
+        On page two onwards there is no lead article, so it sits at the top of
+        the list instead — still the row above the entries.
+      {%- endcomment -%}
+      <form class="site-search" action="{{ site.search_url }}" method="get" role="search">
+        <label class="visually-hidden" for="search-field">Search articles</label>
+        <input class="site-search__field" type="search" id="search-field" name="q"
+               placeholder="Search articles&hellip;">
+        <button class="site-search__submit" type="submit">Search</button>
+      </form>
+
       <div class="post-list">
         {% if pagination.current_page == 1 %}{% assign start = 1 %}{% else %}{% assign start = 0 %}{% endif %}
         {% for post in posts offset: start %}

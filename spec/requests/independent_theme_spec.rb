@@ -16,6 +16,45 @@ RSpec.describe "the Independent theme" do
     expect(Theme.selection.bundle.name).to eq("Independent")
   end
 
+  describe "search" do
+    it "puts a field below the latest article, above the rest of the list" do
+      create_post(title: "Kantan Dev")
+
+      get root_path
+
+      expect(response.body).to include('action="/search"', 'name="q"')
+      expect(response.body.index('class="site-search"')).to be > response.body.index('class="post-lead"')
+      expect(response.body.index('class="site-search"')).to be < response.body.index('class="post-list"')
+    end
+
+    it "renders results, and keeps them out of the search index" do
+      create_post(title: "Deploying with Kamal")
+
+      get search_path(q: "kamal")
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("Deploying with Kamal")
+      expect(response.body).to include('<meta name="robots" content="noindex, follow">')
+    end
+
+    it "prompts rather than reporting nothing found before a search is run" do
+      create_post(title: "Deploying with Kamal")
+
+      get search_path
+
+      expect(response.body).to include("Search the articles")
+      expect(response.body).not_to include("Deploying with Kamal")
+    end
+
+    it "says when nothing matched" do
+      create_post(title: "Deploying with Kamal")
+
+      get search_path(q: "gardening")
+
+      expect(response.body).to include("No articles match")
+    end
+  end
+
   describe "a post with a featured image" do
     before { create_post(featured_media_item: cover).categories << create(:category, name: "AI", slug: "ai") }
 
@@ -194,6 +233,42 @@ RSpec.describe "the Independent theme" do
 
       get "/category/ai"
       expect(response.body).to include('<h1 class="page-title">AI</h1>')
+    end
+
+    # The archive heading is the one place a term's own name reaches a template.
+    # It used to arrive as a plain Hash, which Liquid does not escape, so an
+    # imported term name could put a script tag straight into the page.
+    describe "a term whose name contains markup" do
+      let(:hostile) { %(Bold <script>alert("x")</script>) }
+
+      it "escapes it on a category archive" do
+        category = create(:category, name: hostile, slug: "ai")
+        create_post.categories << category
+
+        get "/category/ai"
+
+        expect(response.body).not_to include(%(<script>alert("x")</script>))
+        expect(response.body).to include("&lt;script&gt;")
+      end
+
+      it "escapes it on a tag archive" do
+        tag = create(:tag, name: hostile, slug: "ai")
+        create_post.tags << tag
+
+        get "/tag/ai"
+
+        expect(response.body).not_to include(%(<script>alert("x")</script>))
+        expect(response.body).to include("&lt;script&gt;")
+      end
+
+      it "escapes a category description too" do
+        category = create(:category, name: "AI", slug: "ai", description: hostile)
+        create_post.categories << category
+
+        get "/category/ai"
+
+        expect(response.body).not_to include(%(<script>alert("x")</script>))
+      end
     end
 
     it "renders imported block markup verbatim" do

@@ -32,6 +32,21 @@ Rails.application.routes.draw do
 
   get "up" => "rails/health#show", as: :rails_health_check
 
+  # The PWA files Rails renders from app/views/pwa. Declared here for the same
+  # reason as the theme assets below: without a route of their own, a browser
+  # that already has a service worker registered for this origin re-fetches
+  # /service-worker on every navigation, falls through to the catch-all and
+  # raises RecordNotFound. The cost is that a post can no longer take either of
+  # these two slugs.
+  #
+  # defaults: pins the format the way the feed route does. Without it the
+  # extensionless path is negotiated as HTML and the .js/.json templates are
+  # never found.
+  get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker,
+      defaults: { format: :js }
+  get "manifest" => "rails/pwa#manifest", as: :pwa_manifest,
+      defaults: { format: :json }
+
   # Theme assets. Declared before the public section because the catch-all
   # further down would otherwise swallow it. format: false keeps ".css" as part
   # of the path rather than letting Rails read it as a response format.
@@ -47,6 +62,11 @@ Rails.application.routes.draw do
   root "posts#index"
 
   get "feed", to: "posts#feed", defaults: { format: :atom }, as: :feed
+
+  # Article search. Above the catch-all like everything else in this section;
+  # the cost is that a post can no longer take the slug "search".
+  resource :search, only: [ :show ]
+
   get "category/:slug", to: "categories#show", as: :category
   get "tag/:slug", to: "tags#show", as: :tag
 

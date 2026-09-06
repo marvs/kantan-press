@@ -8,6 +8,13 @@
     {%- if page.description != blank %}
     <meta name="description" content="{{ page.description }}">
     {%- endif %}
+    {%- comment -%}
+      Set on search results only. A result page is not content, and indexing one
+      just puts a copy of the archive in the index under a query string.
+    {%- endcomment -%}
+    {%- if page.robots != blank %}
+    <meta name="robots" content="{{ page.robots }}">
+    {%- endif %}
     {%- if page.canonical_url != blank %}
     <link rel="canonical" href="{{ page.canonical_url }}">
     <meta property="og:url" content="{{ page.canonical_url }}">

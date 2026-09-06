@@ -6,12 +6,14 @@ module Themes
     # lives or dies on its canonical URLs and og: tags, and those should not
     # depend on a theme author getting them right.
     class PageDrop < BaseDrop
-      def initialize(title:, description: nil, canonical_url: nil, image_url: nil, kind: "website")
+      def initialize(title:, description: nil, canonical_url: nil, image_url: nil, kind: "website",
+                     robots: nil)
         @title = title
         @description = description
         @canonical_url = canonical_url
         @image_url = image_url
         @kind = kind
+        @robots = robots
         super()
       end
 
@@ -33,11 +35,11 @@ module Themes
       def canonical_url = optional(@canonical_url)
       def image_url = optional(@image_url)
 
-      private
-        # nil rather than "" so a theme can write {% if page.image_url %}.
-        def optional(value)
-          h(value) if value.present?
-        end
+      # Nil on an ordinary page, so a theme emits the meta tag only where the
+      # app asks for one. Search results are the case that needs it: a result
+      # page is not content, and WordPress noindexes its own for the same
+      # reason.
+      def robots = optional(@robots)
     end
   end
 end

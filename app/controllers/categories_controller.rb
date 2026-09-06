@@ -10,8 +10,8 @@ class CategoriesController < ApplicationController
                                                     description: @category.description,
                                                     canonical_url: category_url(@category.slug)),
                   posts: post_drops(@posts),
-                  archive: { "title" => @category.name, "description" => @category.description,
-                             "kind" => "category" },
+                  archive: Themes::Drops::ArchiveDrop.new(title: @category.name, kind: "category",
+                                                          description: @category.description),
                   category: Themes::Drops::CategoryDrop.new(@category))
   end
 end

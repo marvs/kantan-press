@@ -337,6 +337,57 @@ h1, h2, h3, h4, h5, h6 {
 
 .site-nav a:hover .site-nav__count { color: var(--accent); }
 
+/* ------------------------------------------------------------ site search */
+
+/* A full row of its own, between the latest article and the list below it. The
+   rule underneath continues the one .post-lead draws, so the form reads as a
+   band in the column rather than as something floating between two sections. */
+.site-search {
+  display: flex;
+  gap: 0.5rem;
+  padding: 1.5rem 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+.site-search__field {
+  flex: 1;
+  min-width: 0;
+  padding: 0.45rem 0.7rem;
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-size: 0.85rem;
+}
+
+.site-search__field::placeholder { color: var(--ink-soft); opacity: 0.75; }
+
+.site-search__field:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.site-search__submit {
+  flex: none;
+  padding: 0.45rem 0.9rem;
+  border: 1px solid var(--accent);
+  border-radius: 3px;
+  background: var(--accent);
+  color: #fff;
+  font: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.site-search__submit:hover { filter: brightness(0.94); }
+
+.search-count {
+  margin-bottom: 1.6rem;
+  color: var(--ink-soft);
+  font-size: 0.85rem;
+}
+
 /* Posts and pages keep a quiet one-line version, so the masthead does not
    compete with the article's own title. */
 .site-header--compact { padding: 2rem 0 1.1rem; }

@@ -128,6 +128,28 @@ RSpec.describe Themes::Bundle do
     end
   end
 
+  describe "#resolve_template" do
+    it "uses the theme's own template when it ships one" do
+      dir = write_theme(templates: { "search" => "SEARCH" })
+
+      expect(bundle_for(dir).resolve_template("search")).to eq("search")
+    end
+
+    # A theme written before search existed must keep working: the controller
+    # hands it an archive object as well, so archive.liquid renders results.
+    it "falls back from search to archive" do
+      dir = write_theme(templates: { "archive" => "ARCHIVE" })
+
+      expect(bundle_for(dir).resolve_template("search")).to eq("archive")
+    end
+
+    it "falls back from search all the way to index when there is no archive" do
+      dir = write_theme(templates: { "archive" => nil })
+
+      expect(bundle_for(dir).resolve_template("search")).to eq("index")
+    end
+  end
+
   describe "#asset_path" do
     it "resolves a file inside the assets directory" do
       dir = write_theme(assets: { "theme.css" => "body{}" })

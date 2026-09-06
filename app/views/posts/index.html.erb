@@ -1,5 +1,7 @@
 <% content_for :title, "Kantan Press" %>
 
+<%= render "shared/search_form", query: nil %>
+
 <% if @posts.any? %>
   <div class="post-list">
     <%= render partial: "posts/summary", collection: @posts, as: :post %>

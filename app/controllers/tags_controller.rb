@@ -8,7 +8,7 @@ class TagsController < ApplicationController
     render_themed("archive", fallback: :show,
                   page: Themes::Drops::PageDrop.new(title: @tag.name, canonical_url: tag_url(@tag.slug)),
                   posts: post_drops(@posts),
-                  archive: { "title" => @tag.name, "kind" => "tag" },
+                  archive: Themes::Drops::ArchiveDrop.new(title: @tag.name, kind: "tag"),
                   tag: Themes::Drops::TagDrop.new(@tag))
   end
 end

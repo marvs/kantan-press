@@ -6,6 +6,10 @@ module Themes
       def url = routes.root_path
       def feed_url = routes.feed_path
 
+      # Every template gets `site`, so a theme can put the search field
+      # wherever it likes rather than only on the search page itself.
+      def search_url = routes.search_path
+
       # Only terms that have something published under them. A nav link to an
       # empty archive is a dead end, and WordPress hides empty terms from
       # wp_list_categories by default for the same reason.

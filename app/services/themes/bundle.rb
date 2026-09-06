@@ -13,7 +13,7 @@ module Themes
     # A theme must ship these three. +page+ falls back to +post+ and +archive+
     # to +index+, so a minimal theme stays minimal.
     REQUIRED_TEMPLATES = %w[layout index post].freeze
-    TEMPLATE_FALLBACKS = { "page" => "post", "archive" => "index" }.freeze
+    TEMPLATE_FALLBACKS = { "page" => "post", "archive" => "index", "search" => "archive" }.freeze
 
     # Extensions the asset route will serve. Deliberately excludes .liquid,
     # .json and anything executable, so a theme cannot serve its own source.
@@ -75,10 +75,19 @@ module Themes
     # Applies the fallbacks above, so the renderer can ask for "page" without
     # knowing whether this theme bothered to ship one.
     def resolve_template(name)
-      return name.to_s if template?(name)
+      candidate = name.to_s
+      seen = []
 
-      fallback = TEMPLATE_FALLBACKS[name.to_s]
-      return fallback if fallback && template?(fallback)
+      # The whole chain rather than a single hop, so search falls through
+      # archive to index. index is required of every theme, which is what lets
+      # a theme written before search existed render results instead of
+      # raising. `seen` only guards against a cycle in the map above.
+      until candidate.nil? || seen.include?(candidate)
+        return candidate if template?(candidate)
+
+        seen << candidate
+        candidate = TEMPLATE_FALLBACKS[candidate]
+      end
 
       raise MissingTemplate, "#{directory_name} has no #{name}.liquid"
     end
