@@ -27,6 +27,11 @@ Rails.application.routes.draw do
     resources :comments, only: [ :index, :update, :destroy ]
 
     resource :settings, only: [ :show, :update ]
+
+    # Its own resource rather than another settings field: a file upload needs
+    # a multipart form of its own, and removal needs a verb the settings form
+    # does not have.
+    resource :favicon, only: [ :create, :destroy ]
   end
 
   get "up" => "rails/health#show", as: :rails_health_check
@@ -65,6 +70,10 @@ Rails.application.routes.draw do
   # Article search. Above the catch-all like everything else in this section;
   # the cost is that a post can no longer take the slug "search".
   resource :search, only: [ :show ]
+
+  # An uploaded favicon, which lives under storage/ rather than public/ and so
+  # needs a controller to reach it. Above the catch-all, at the same cost.
+  get "favicon", to: "favicons#show", as: :favicon
 
   get "category/:slug", to: "categories#show", as: :category
   get "tag/:slug", to: "tags#show", as: :tag

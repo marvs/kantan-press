@@ -6,5 +6,10 @@ class Current < ActiveSupport::CurrentAttributes
   # while still picking up a change made in another process on the next request
   # — which a process-level cache would not.
   attribute :site_settings
+
+  # Branding::Favicon.current is asked by both layouts, the theme drop and the
+  # manifest, and each ask is a settings read plus a stat. Held for the request
+  # only, for the same reason as site_settings above.
+  attribute :favicon
   delegate :user, to: :session, allow_nil: true
 end

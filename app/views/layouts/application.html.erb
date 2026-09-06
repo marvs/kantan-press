@@ -11,7 +11,7 @@
 
     <%= auto_discovery_link_tag :atom, feed_url, title: "#{KantanPress::Config.site_title} feed" %>
 
-    <link rel="icon" href="/icon.png" type="image/png">
+    <%= site_favicon_tag %>
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>

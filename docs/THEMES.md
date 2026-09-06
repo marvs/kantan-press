@@ -105,6 +105,7 @@ Every template gets `site`, `settings`, `theme` and `page`.
 | `site.title`, `site.description` | From `KANTAN_SITE_TITLE` / `KANTAN_SITE_DESCRIPTION` |
 | `site.url`, `site.feed_url` | |
 | `site.search_url` | Where a search form posts. On every template, so the field can go in the masthead, the footer, or nowhere |
+| `site.favicon_url`, `site.favicon_type` | The site's icon and its MIME type, for `<link rel="icon">`. A theme **renders** the favicon but cannot set one — an admin uploads it, so installing a theme never changes a site's icon |
 | `site.categories`, `site.tags` | Alphabetical, and **only terms with something published in them** — a nav link to an empty archive is a dead end, and WordPress hides empty terms from `wp_list_categories` for the same reason. Each has `name`, `slug`, `url`, `post_count` |
 | `site.pages` | Published pages, by title |
 

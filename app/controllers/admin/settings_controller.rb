@@ -7,13 +7,17 @@ module Admin
     def show
       @settings = SiteSetting.to_h
       @errors = {}
+      @favicon = Branding::Favicon.current
     end
 
     def update
       @settings = submitted
       @errors = validate(@settings)
 
-      return render(:show, status: :unprocessable_content) if @errors.any?
+      if @errors.any?
+        @favicon = Branding::Favicon.current
+        return render(:show, status: :unprocessable_content)
+      end
 
       @settings.each { |key, value| SiteSetting.set(key, value) }
       redirect_to admin_settings_path, notice: "Settings saved."

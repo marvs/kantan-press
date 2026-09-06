@@ -49,6 +49,10 @@ other commands.
   HTTP with WebMock — the suite must never hit the network.
 - Write the failing test first, confirm it fails for the right reason, then make
   it pass.
+- `Current.reset` runs in the global `before`. Rails resets `CurrentAttributes`
+  around each request, but nothing resets it around each example — without it a
+  memoised value leaks into the next test, which shows up as a spec that passes
+  alone and fails in its file.
 
 ## Text and escaping — bugs the codebase has already had
 
@@ -107,6 +111,18 @@ See `docs/THEMES.md` for the theme-author contract and
   traversal entries, and validate everything before writing a byte. Stage inside
   the destination filesystem so the final step is an atomic rename, and restore
   the previous version if it fails.
+- **Accepting any upload: the extension and the `Content-Type` are supplied by
+  the uploader, so neither is evidence.** Read the file's own leading bytes and
+  require them to agree with the claimed type — an HTML document called
+  `logo.png` and served back as `image/png` is stored XSS.
+  `Branding::FaviconUploader` is the worked example, including reading PNG
+  dimensions straight out of the IHDR header so no image gem is needed.
+- **Check an upload's size before reading it.** `file.size` first, then `read`.
+  A cap applied after the bytes are already a Ruby string caps nothing that
+  matters.
+- **`params[:file]` is not necessarily a file.** Guard on
+  `respond_to?(:original_filename)` before touching it, or a hand-made POST
+  turns into a 500.
 - **Per-process caches are read by several Puma threads.** Use
   `Concurrent::Map`, not `Hash`.
 - **Cache filesystem scans on a directory's mtime**, and only in production, so
@@ -122,7 +138,11 @@ See `docs/THEMES.md` for the theme-author contract and
   writable from the admin. `KantanPress::Config#site_setting` is the first kind;
   `#setting` is the second.
 - **Per-request memoisation belongs on `Current`,** not in a class-level ivar: a
-  process-level cache would not see a change made by another Puma worker.
+  process-level cache would not see a change made by another Puma worker. When
+  the value can legitimately be nil, memoise a one-element array as the box —
+  `(Current.thing ||= [ lookup ]).first` — or "not looked up yet" and "looked up,
+  found nothing" are indistinguishable. Anything that mutates the underlying
+  value clears the attribute.
 - **A `stored` row is not proof the object exists.** The database and the bucket
   drift — an object deleted, or media fetched under the `disk` backend before
   the app was pointed at S3. `retry_media` skips such rows because they are not

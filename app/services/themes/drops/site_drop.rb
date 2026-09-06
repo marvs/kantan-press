@@ -10,6 +10,12 @@ module Themes
       # wherever it likes rather than only on the search page itself.
       def search_url = routes.search_path
 
+      # A theme renders the favicon; it never chooses it. The app hands over a
+      # URL and a type, so installing a theme cannot quietly change the icon a
+      # site has been wearing.
+      def favicon_url = h(Branding::Favicon.current&.url || "/icon.png")
+      def favicon_type = h(Branding::Favicon.current&.content_type || "image/png")
+
       # Only terms that have something published under them. A nav link to an
       # empty archive is a dead end, and WordPress hides empty terms from
       # wp_list_categories by default for the same reason.

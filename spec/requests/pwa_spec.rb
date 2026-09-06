@@ -19,4 +19,30 @@ RSpec.describe "the PWA files" do
     expect(response.media_type).to eq("application/json")
     expect(JSON.parse(response.body)).to include("start_url" => "/")
   end
+
+  describe "the icon it names" do
+    before { favicon_root }
+
+    it "is the shipped default until one is uploaded" do
+      get "/manifest"
+
+      icons = JSON.parse(response.body)["icons"]
+
+      expect(icons.map { |i| i["src"] }.uniq).to eq([ "/icon.png" ])
+      expect(icons.first["sizes"]).to eq("512x512")
+    end
+
+    # The app does not resize an upload, so it cannot honestly claim a size.
+    it "is the uploaded one, at no declared size, once there is one" do
+      install_favicon(extension: ".svg")
+
+      get "/manifest"
+
+      icons = JSON.parse(response.body)["icons"]
+
+      expect(icons.first["src"]).to match(%r{\A/favicon\?v=\d+\z})
+      expect(icons.first["type"]).to eq("image/svg+xml")
+      expect(icons.first["sizes"]).to eq("any")
+    end
+  end
 end

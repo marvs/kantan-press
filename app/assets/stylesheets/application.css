@@ -915,6 +915,21 @@ button.linkish { background: none; border: none; color: #c6cbd4; padding: 0; fon
 .errors { background: #fee4e2; border: 1px solid #e5aaa4; color: var(--danger); border-radius: 4px; padding: 0.8rem 1rem; margin-bottom: 1.25rem; font-size: 0.87rem; }
 .errors ul { margin: 0.3rem 0 0; padding-left: 1.1rem; }
 
+/* The favicon control on the settings page: the icon at a size you can
+   actually judge, with everything you can do to it beside it. */
+.favicon-row { display: flex; align-items: flex-start; gap: 1.1rem; }
+
+.favicon-preview {
+  flex: none;
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  background: var(--bg);
+  padding: 4px;
+  object-fit: contain;
+}
+
+.favicon-row .btn { margin-top: 0.5rem; }
+
 .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr)); gap: 0.9rem; }
 .stat { background: #fff; border: 1px solid var(--rule); border-radius: 6px; padding: 0.9rem 1rem; }
 .stat .n { font-size: 1.5rem; font-weight: 700; font-variant-numeric: tabular-nums; }

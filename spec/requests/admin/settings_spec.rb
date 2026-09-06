@@ -12,6 +12,17 @@ RSpec.describe "Admin::Settings" do
   context "when signed in" do
     before { sign_in }
 
+    # The admin wears the site's icon too, so an admin tab and a site tab look
+    # like the same property.
+    it "links an uploaded favicon in the admin layout" do
+      favicon_root
+      install_favicon(extension: ".png")
+
+      get admin_settings_path
+
+      expect(response.body).to match(%r{<link rel="icon" href="/favicon\?v=\d+" type="image/png">})
+    end
+
     it "shows the current values" do
       SiteSetting.set(:site_title, "Tech and FI")
       SiteSetting.set(:site_description, "Notes on code and money")

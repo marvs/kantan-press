@@ -1,15 +1,31 @@
+<%#
+  The installed-app icon follows the same rule as the browser tab: an admin's
+  upload wins, the shipped mark stands in otherwise.
+
+  Interpolated plainly rather than through to_json because both values are the
+  app's own — a type from Branding::Favicon::CONTENT_TYPES, and a URL whose only
+  variable part is an integer mtime. Nothing a person typed reaches this file.
+
+  "any" rather than a pixel size when a favicon has been uploaded: the app
+  serves it as-is and never resizes, so it does not know the dimensions and
+  should not claim them.
+-%>
+<% favicon = Branding::Favicon.current -%>
+<% src = favicon&.url || "/icon.png" -%>
+<% type = favicon&.content_type || "image/png" -%>
+<% sizes = favicon ? "any" : "512x512" -%>
 {
   "name": "KantanPress",
   "icons": [
     {
-      "src": "/icon.png",
-      "type": "image/png",
-      "sizes": "512x512"
+      "src": "<%= src %>",
+      "type": "<%= type %>",
+      "sizes": "<%= sizes %>"
     },
     {
-      "src": "/icon.png",
-      "type": "image/png",
-      "sizes": "512x512",
+      "src": "<%= src %>",
+      "type": "<%= type %>",
+      "sizes": "<%= sizes %>",
       "purpose": "maskable"
     }
   ],

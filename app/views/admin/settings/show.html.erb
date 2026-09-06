@@ -46,6 +46,40 @@
         <% end %>
       </div>
     </div>
+
+    <div class="card">
+      <div class="card-head">Favicon</div>
+      <div class="card-body">
+        <%# Its own form: this one is multipart, and the settings form above
+            posts text fields only. %>
+        <div class="favicon-row">
+          <img class="favicon-preview" src="<%= @favicon&.url || "/icon.png" %>" alt="" width="48" height="48">
+          <div>
+            <% if @favicon %>
+              <p class="hint" style="margin-top:0">
+                Your own icon, shown in browser tabs and when the site is installed as an app.
+              </p>
+            <% end %>
+
+            <%= form_with url: admin_favicon_path, method: :post do |form| %>
+              <%= form.file_field :favicon, accept: "image/png,image/svg+xml" %>
+              <%= form.submit "Upload favicon", class: "btn" %>
+            <% end %>
+
+            <p class="hint">
+              PNG or SVG, up to
+              <%= Branding::FaviconUploader::MAX_BYTES / 1.kilobyte %>KB and
+              <%= Branding::FaviconUploader::MAX_PIXELS %>x<%= Branding::FaviconUploader::MAX_PIXELS %> pixels.
+              It is served at whatever size you upload — nothing is resized.
+            </p>
+
+            <% if @favicon %>
+              <%= button_to "Remove favicon", admin_favicon_path, method: :delete, class: "linkish" %>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <div class="side">

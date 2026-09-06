@@ -34,8 +34,12 @@ module Authentication
       redirect_to new_session_path
     end
 
+    # The admin, not the public home page: everyone with an account here is an
+    # admin — there is no reader role — so signing in is something you do in
+    # order to work, and the desk is where that starts. A request that was
+    # bounced to the login still wins, so you land on the page you were after.
     def after_authentication_url
-      session.delete(:return_to_after_authenticating) || root_url
+      session.delete(:return_to_after_authenticating) || admin_root_url
     end
 
     def start_new_session_for(user)

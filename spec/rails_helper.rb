@@ -47,6 +47,11 @@ RSpec.configure do |config|
   config.before do
     ObjectStore.current = FakeObjectStore.new
 
+    # Rails resets CurrentAttributes around each request; nothing resets it
+    # around each example. Without this, a value memoised on Current in one
+    # example is still there in the next.
+    Current.reset
+
     # Belt and braces alongside keeping dotenv out of :test — the suite must
     # never inherit a developer's real bucket or CDN host.
     allow(KantanPress::Config).to receive(:storage_backend).and_return(:disk)

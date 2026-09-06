@@ -145,6 +145,26 @@ RSpec.describe "theme drops" do
       expect(render("{{ site.search_url }}", "site" => described_class.new)).to eq("/search")
     end
 
+    # A theme renders the favicon but never chooses it: the app hands it a URL,
+    # so installing a theme cannot silently change a site's icon.
+    describe "the favicon" do
+      before { favicon_root }
+
+      it "is the shipped default until one is uploaded" do
+        output = render("{{ site.favicon_url }}|{{ site.favicon_type }}", "site" => described_class.new)
+
+        expect(output).to eq("/icon.png|image/png")
+      end
+
+      it "is the uploaded one once there is one" do
+        install_favicon(extension: ".svg")
+
+        output = render("{{ site.favicon_url }}|{{ site.favicon_type }}", "site" => described_class.new)
+
+        expect(output).to match(%r{\A/favicon\?v=\d+\|image/svg\+xml\z})
+      end
+    end
+
     # A nav link to an empty archive is a dead end. WordPress hides empty terms
     # from wp_list_categories by default for the same reason.
     it "leaves out a category with nothing published in it" do

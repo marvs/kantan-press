@@ -21,6 +21,25 @@ RSpec.describe "the sign-in page" do
     expect(response.body).not_to include('class="site-nav"', "/category/stoicism")
   end
 
+  describe "the favicon it links" do
+    before { favicon_root }
+
+    it "links the shipped default when nobody has uploaded one" do
+      get new_session_path
+
+      expect(response.body).to include('<link rel="icon" href="/icon.png" type="image/png">')
+    end
+
+    it "links the uploaded one instead when there is one" do
+      install_favicon(extension: ".svg")
+
+      get new_session_path
+
+      expect(response.body).to match(%r{<link rel="icon" href="/favicon\?v=\d+" type="image/svg\+xml">})
+      expect(response.body).not_to include("/icon.png")
+    end
+  end
+
   it "renders a labelled form rather than the scaffold" do
     get new_session_path
 
@@ -37,6 +56,31 @@ RSpec.describe "the sign-in page" do
 
     expect(response.body).not_to include("Forgot", "password reset")
     expect { passwords_path }.to raise_error(NameError)
+  end
+
+  describe "where a successful sign-in lands" do
+    let(:user) { create(:user) }
+
+    # Everyone with an account here is an admin — there is no reader role — so
+    # the useful destination is the desk, not the front page.
+    it "goes to the admin rather than the public home page" do
+      post session_path, params: { email_address: user.email_address,
+                                   password: AuthenticationHelpers::PASSWORD }
+
+      expect(response).to redirect_to(admin_root_url)
+    end
+
+    # The default changes; being returned to the page you were actually after
+    # does not.
+    it "still returns to the page that sent you to the login" do
+      get admin_media_items_path
+      expect(response).to redirect_to(new_session_path)
+
+      post session_path, params: { email_address: user.email_address,
+                                   password: AuthenticationHelpers::PASSWORD }
+
+      expect(response).to redirect_to(admin_media_items_url)
+    end
   end
 
   it "shows a failed sign-in as a styled flash, not an inline style attribute" do

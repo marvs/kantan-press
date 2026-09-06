@@ -218,6 +218,25 @@ RSpec.describe "the Independent theme" do
     end
   end
 
+  describe "the favicon" do
+    before { favicon_root }
+
+    it "links the shipped default until one is uploaded" do
+      get root_path
+
+      expect(response.body).to include('href="/icon.png"')
+    end
+
+    it "links an uploaded one through the theme" do
+      install_favicon(extension: ".png")
+
+      get root_path
+
+      expect(response.body).to match(%r{href="/favicon\?v=\d+"})
+      expect(response.body).not_to include('href="/icon.png"')
+    end
+  end
+
   describe "the rest of the site" do
     it "renders the index, a page and an archive" do
       create_post(title: "Kantan Dev")
