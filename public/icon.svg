@@ -1,3 +1,20 @@
-<svg width="512" height="512" xmlns="http://www.w3.org/2000/svg">
-  <circle cx="256" cy="256" r="256" fill="red"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 32 32" role="img" aria-label="Kantan Press">
+  <!-- A hanko: the carved seal that stands in for a signature across Japan.
+       Stamping one is literally a press, so the Japanese half of the name and
+       the printing half arrive in the same shape.
+
+       Drawn on a 32-unit grid, and tuned by rendering it at 16px rather than
+       by eye at full size. The arms are 3.7 units, not the 4.3 the stem wants:
+       heavier arms close the K's counters into a blob at tab size, and the
+       counters are what make it read as a K at all. They also spring from
+       below centre (16.6) and run steeper than the geometry would suggest,
+       which opens the upper counter further. A filled ground with a knocked
+       out letter is the sturdiest favicon construction there is — the
+       silhouette survives even as the counters tighten. -->
+  <rect x="1.5" y="1.5" width="29" height="29" rx="5.5" fill="#1d4ed8"/>
+  <g fill="none" stroke="#ffffff" stroke-width="3.7">
+    <path d="M12.6 16.6 23.4 7"/>
+    <path d="M12.6 16.6 23.6 25.2"/>
+  </g>
+  <rect x="8.4" y="7.4" width="4.2" height="17.2" fill="#ffffff"/>
 </svg>

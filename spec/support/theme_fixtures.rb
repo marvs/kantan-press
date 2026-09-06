@@ -62,7 +62,8 @@ module ThemeFixtures
   def build_theme_zip(entries, name: "theme.zip")
     path = Pathname.new(theme_tmpdir).join(name)
 
-    Zip::File.open(path.to_s, Zip::File::CREATE) do |zip|
+    # rubyzip 3 dropped the positional Zip::File::CREATE flag for a keyword.
+    Zip::File.open(path.to_s, create: true) do |zip|
       entries.each do |entry_name, contents|
         if contents.is_a?(Pathname)
           zip.add(entry_name.to_s, contents.to_s)

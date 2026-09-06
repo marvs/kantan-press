@@ -163,7 +163,12 @@ module Themes
           FileUtils.mkdir_p(target)
         else
           FileUtils.mkdir_p(target.dirname)
-          entry.extract(target.to_s) { true }
+
+          # rubyzip joins the path it is given onto destination_directory, so
+          # the name has to be relative and the base passed separately. Handing
+          # it an absolute path silently writes under the working directory
+          # instead. The block is its on-exists proc: overwrite.
+          entry.extract(name, destination_directory: extracted.to_s) { true }
         end
       end
 
