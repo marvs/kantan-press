@@ -9,7 +9,7 @@
 
     <%= yield :head %>
 
-    <%= auto_discovery_link_tag :atom, feed_url, title: "Kantan Press feed" %>
+    <%= auto_discovery_link_tag :atom, feed_url, title: "#{KantanPress::Config.site_title} feed" %>
 
     <link rel="icon" href="/icon.png" type="image/png">
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
@@ -17,21 +17,46 @@
   </head>
 
   <body class="site">
+    <%# Deliberately shaped like the Independent theme's masthead — same
+        elements in the same order — so the pages the app renders itself read as
+        the same site. The theme is Liquid and cannot be reached from here, so
+        this is a duplicate by intent, not an abstraction waiting to happen. %>
     <header class="site-header">
-      <a class="site-title" href="<%= root_path %>">Kantan Press</a>
-      <nav class="site-nav">
-        <% Category.alphabetical.limit(8).each do |category| %>
-          <%= link_to category.name, category_path(category.slug) %>
+      <div class="wrap">
+        <p class="site-title"><a href="<%= root_path %>"><%= KantanPress::Config.site_title %></a></p>
+
+        <% if KantanPress::Config.site_description.present? %>
+          <p class="site-description"><%= KantanPress::Config.site_description %></p>
         <% end %>
-      </nav>
+
+        <%# The sign-in page sets this: browsing categories is not what someone
+            is there to do, so the masthead keeps only the title and tagline. %>
+        <% unless content_for?(:hide_site_nav) %>
+          <nav class="site-nav">
+            <% Category.alphabetical.limit(8).each do |category| %>
+              <%= link_to category.name, category_path(category.slug) %>
+            <% end %>
+          </nav>
+        <% end %>
+      </div>
     </header>
 
     <main class="site-main">
-      <%= yield %>
+      <div class="wrap">
+        <% if flash[:notice].present? || flash[:alert].present? %>
+          <div class="flash <%= flash[:alert].present? ? 'flash-alert' : 'flash-notice' %>">
+            <%= flash[:alert].presence || flash[:notice] %>
+          </div>
+        <% end %>
+
+        <%= yield %>
+      </div>
     </main>
 
     <footer class="site-footer">
-      <p><%= link_to "Feed", feed_path %> &middot; Powered by <%= link_to "Kantan Press", "https://github.com/marvs/kantan-press", target: "_blank", rel: "noopener" %></p>
+      <div class="wrap">
+        <p><%= link_to "Feed", feed_path %> &middot; Powered by <%= link_to "Kantan Press", "https://github.com/marvs/kantan-press", target: "_blank", rel: "noopener" %></p>
+      </div>
     </footer>
   </body>
 </html>
