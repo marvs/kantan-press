@@ -22,7 +22,7 @@ gem "bcrypt", "~> 3.1.7"
 gem "nokogiri"
 
 # Uploads media to any S3-compatible object store (Cloudflare R2, S3, Spaces)
-gem "aws-sdk-s3", "~> 1.0", require: false
+gem "aws-sdk-s3", "~> 1.230", require: false
 
 # Renders themes. Liquid is a sandbox: a template cannot reach Ruby objects that
 # were not handed to it as a drop, so a theme downloaded from a stranger cannot
