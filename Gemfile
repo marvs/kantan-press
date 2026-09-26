@@ -27,7 +27,7 @@ gem "aws-sdk-s3", "~> 1.0", require: false
 # Renders themes. Liquid is a sandbox: a template cannot reach Ruby objects that
 # were not handed to it as a drop, so a theme downloaded from a stranger cannot
 # read the database, ENV, or the S3 credentials.
-gem "liquid", "~> 5.5"
+gem "liquid", "~> 5.14"
 
 # Unpacks an uploaded theme .zip
 gem "rubyzip", "~> 3.5", require: "zip"
